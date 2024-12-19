@@ -19,7 +19,6 @@ A modern, responsive e-commerce website built using **React.js** and **Tailwind 
 ## Getting Started
 
 1. **Clone the repository** to your local machine:
-   ```
    git clone https://github.com/your-username/your-repo-name.git
 2.**Navigate to the project directory:
 ```
