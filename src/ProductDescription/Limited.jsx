@@ -10,19 +10,19 @@ import menu from "../assets/MENU.png";
 const products = [
   {
     id: 1,
-    name: 'ITEM1',
+    name: 'Ltd stockITEM1',
     price: 48,
     image: 'https://via.placeholder.com/300x400',
   },
   {
     id: 2,
-    name: 'ITEM2',
+    name: 'LTD stoc ITEM2',
     price: 35,
     image: 'https://via.placeholder.com/300x400',
   },
   {
     id: 3,
-    name: 'ITEM3',
+    name: 'LTD stock ITEM3',
     price: 70,
     image: 'https://via.placeholder.com/300x400',
   }

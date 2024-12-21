@@ -5,7 +5,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './styles.css';
 import Comp2 from './ProductDescription/ProductDescriptionPage.jsx';
 import Product from './product/ProductShowcase.jsx';
-
+import Basic from './ProductDescription/BasicProducts.jsx';
+import LTD from './ProductDescription/LTD.jsx';
+import Limited from './ProductDescription/Limited.jsx';
+import Services from './Footer/CustomerServices.jsx';
+import Order from './Footer/OrderManagement.jsx';
+import Return from './Footer/ReturnPolicy.jsx';
+import Privacy from './Footer/Privacy.jsx';
+import FAQ from './Footer/FAQ.jsx';
+import Cookies from './Footer/Cookies.jsx';
+import TermsAndCondition from './Footer/TermsAndCondition.jsx';
 function App() {
   // Define routes using createBrowserRouter
   const router = createBrowserRouter([
@@ -24,6 +33,46 @@ function App() {
     {
       path: "/product/:id", // Product page route
       element: <Product />,
+    },
+    {
+      path: "/Basic/:id", // Product page route
+      element: <Basic />,
+    },
+    {
+      path: "/LTD/:id", // Product page route
+      element: <LTD />,
+    },
+    {
+      path: "/Limited/:id", // Product page route
+      element: <Limited />,
+    },
+    {
+      path: "/CustomerService", // Product page route
+      element: <Services />,
+    },
+    {
+      path: "/Orders", // Product page route
+      element: <Order />,
+    },
+    {
+      path: "/ReturnPolicy", // Product page route
+      element: <Return />,
+    },
+    {
+      path: "/Privacy", // Product page route
+      element: <Privacy />,
+    },
+    {
+      path: "/FAQ", // Product page route
+      element: <FAQ />,
+    },
+    {
+      path: "/Cookies", // Product page route
+      element: <Cookies />,
+    },
+    {
+      path: "/T&C", // Product page route
+      element: <TermsAndCondition />,
     }
   ]);
 

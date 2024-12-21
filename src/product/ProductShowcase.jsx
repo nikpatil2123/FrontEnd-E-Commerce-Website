@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/blacklogo.png';
-
+import shopping from "../assets/CART.png";
+import user from "../assets/USER.png";
+import search from "../assets/SEARCH.png";
+import menu from "../assets/MENU.png";
 // Reusing the Button component
 const Button = React.forwardRef(({ className, variant, size, children, ...props }, ref) => {
   const baseStyle = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
@@ -87,6 +90,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-lg">{item.name}</h3>
+                  <p className="text-gray-600">Size: {item.size}</p>
                   <p className="text-gray-600">₹{item.price} x {item.quantity}</p>
                 </div>
                 <button onClick={() => removeFromCart(item.id)} className="text-black hover:text-red-500 transition-colors">
@@ -149,6 +153,10 @@ const Navbar = ({ cartCount, toggleCart }) => {
     setIsSearchOpen((prevState) => !prevState);
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   useEffect(() => {
     const closeMenu = (e) => {
       if (
@@ -165,15 +173,23 @@ const Navbar = ({ cartCount, toggleCart }) => {
     return () => window.removeEventListener("click", closeMenu);
   }, []);
 
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
+
   return (
-    <nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-4">
-      {/* Left side */}
+    <nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-8 py-12 pt-12">
+      {/* Left: Menu Icon and Search */}
       <div className="flex items-center space-x-4 text-black">
-        <i
-          className="fa fa-bars cursor-pointer text-xl p-2 hover:text-gray-400"
+        <img 
+          src={menu} 
+          alt="" 
+          className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
           id="menu-icon"
           onClick={toggleMenu}
-        ></i>
+        />
         {isSearchOpen && (
           <div className="relative flex-1" id="search-input">
             <input
@@ -181,37 +197,52 @@ const Navbar = ({ cartCount, toggleCart }) => {
               className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none w-full"
               placeholder="Search"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearch}
               ref={searchInputRef}
             />
+            <i
+              className="fa fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 cursor-pointer"
+              id="search-icon"
+              onClick={toggleSearch}
+            ></i>
           </div>
         )}
         {!isSearchOpen && (
-          <i
-            className="fa fa-search text-xl p-2 hover:text-gray-400 cursor-pointer"
+          <img 
+            src={search} 
+            alt="search icon" 
+            className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
             id="search-icon"
             onClick={toggleSearch}
-          ></i>
+          />
         )}
       </div>
 
       {/* Center: Logo */}
       <div className="flex-1 text-center">
-        <Link to="/">
-          <img src={logo} alt="Logo" className="h-12 mx-auto" />
-        </Link>
+        <a href="/">
+          <div className="flex justify-center items-center">
+            <img src={logo} alt="Logo" className="h-16 w-16" />
+          </div>
+        </a>
       </div>
 
-      {/* Right side */}
+      {/* Right: User and Cart */}
       <div className="flex items-center space-x-4 text-black">
         <Link to="/login">
-          <i className="fa fa-user text-xl p-2 hover:text-gray-400"></i>
+          <img 
+            src={user} 
+            alt="User Icon" 
+            className="text-xl p-2 hover:text-gray-400 w-10 h-10"
+          />
         </Link>
         <div className="relative">
-          <i 
-            className="fa fa-shopping-cart text-xl p-2 hover:text-gray-400 cursor-pointer"
+          <img 
+            src={shopping} 
+            alt="Shopping Cart Icon" 
+            className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
             onClick={toggleCart}
-          ></i>
+          />
           {cartCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
               {cartCount}
@@ -222,50 +253,68 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
       {/* Side Menu */}
       <div
-        className={`fixed top-0 left-0 h-screen w-[300px] bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen w-2/5 bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         id="side-menu"
+        style={{ width: "410px" }}
       >
         <div className="p-6 flex flex-col h-full">
           {/* Close Icon */}
           <div className="flex justify-end mb-8">
-            <i
-              className="fa fa-times text-3xl cursor-pointer hover:text-gray-400"
-              onClick={toggleMenu}
-            ></i>
           </div>
-          
+
           {/* Main Menu Links */}
-          <div className="flex-1 space-y-6 text-lg font-semibold">
+          <div className="flex-1 space-y-6 text-lg font-regular">
             <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>HOME</span> <i className="fa fa-chevron-right text-sm"></i>
+              <span>HOME</span> 
             </a>
-            <a href="/shop" className="flex items-center justify-between hover:text-gray-400">
-              <span>SHOP</span> <i className="fa fa-chevron-right text-sm"></i>
-            </a>
+            <Link to="/shop" className="flex items-center justify-between hover:text-gray-400">
+              <span>SHOP ALL </span> 
+            </Link>
+            <Link to="/LTD/:id" className="flex items-center justify-between hover:text-gray-400">
+              <span>LTD. ED.</span> 
+            </Link>
+            <Link to="/Basic/:id" className="flex items-center justify-between hover:text-gray-400">
+              <span>BASIC</span> 
+            </Link>
+            <Link to="/Limited/:id" className="flex items-center justify-between hover:text-gray-400">
+              <span>LIMITED STOCKS</span> 
+            </Link>
             <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>LAST LOOKS</span> <i className="fa fa-chevron-right text-sm"></i>
-            </a>
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>ABOUT US</span> <i className="fa fa-chevron-right text-sm"></i>
-            </a>
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>CONTACT</span> <i className="fa fa-chevron-right text-sm"></i>
             </a>
           </div>
-          
+
           {/* Footer Links */}
-          <div className="space-y-2 text-sm text-gray-400 mt-8">
-            <a href="/" className="block hover:text-gray-300">item1</a>
-            <a href="/" className="block hover:text-gray-300">item2</a>
-            <a href="/" className="block hover:text-gray-300">item3</a>
-            <a href="/" className="block hover:text-gray-300">Privacy</a>
-            <a href="/" className="block hover:text-gray-300">FAQ</a>
+          <div className="space-y-5 text-sm text-gray-400 mt-4">
+            <Link to="/CustomerService" className="block hover:text-gray-300">Customer Service</Link>
+            <Link to="/Orders" className="block hover:text-gray-300">Order Management</Link>
+            <Link to="/ReturnPolicy" className="block hover:text-gray-300">Return Policy</Link>
+            <Link to="/Privacy" className="block hover:text-gray-300">Privacy</Link>
+            <Link to="/FAQ" className="block hover:text-gray-300">FAQ</Link>
+            <Link to="/Cookies" className="block hover:text-gray-300">Cookies</Link>
+            <Link to="/T&C" className="block hover:text-gray-300">Terms & Condition</Link>
+
+
+            {/* Icons below the links */}
+            <div className="flex space-x-4 mt-4 ">
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-instagram text-gray-400 hover:text-gray-300 text-lg"></i>
+              </a>
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-linkedin-in text-gray-400 hover:text-gray-300 text-lg"></i>
+              </a>
+              <a href="tel:+123456789" target="_blank" rel="noopener noreferrer">
+                <i className="fas fa-phone-alt text-gray-400 hover:text-gray-300 text-lg"></i>
+              </a>
+              <a href="mailto:someone@example.com" target="_blank" rel="noopener noreferrer">
+                <i className="fas fa-envelope text-gray-400 hover:text-gray-300 text-lg"></i>
+              </a>
+            </div>
           </div>
         </div>
-        </div>
-        </nav>
+      </div>
+    </nav>
   );
 };
 
@@ -473,3 +522,4 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
