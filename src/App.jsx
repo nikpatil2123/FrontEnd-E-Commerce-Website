@@ -4,7 +4,7 @@ import Comp1 from './components/comp1.tsx'; // Home component
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './styles.css';
 import Comp2 from './ProductDescription/ProductDescriptionPage.jsx';
-import Product from './product/ProductShowcase.jsx';
+import Product from './product/ProductShowcase.tsx';
 import Basic from './ProductDescription/BasicProducts.jsx';
 import LTD from './ProductDescription/LTD.jsx';
 import Limited from './ProductDescription/Limited.jsx';

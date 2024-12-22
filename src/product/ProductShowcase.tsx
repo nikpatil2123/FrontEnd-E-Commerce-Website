@@ -7,20 +7,24 @@ import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
 
 // Button Component
-const Button = React.forwardRef(({ className, variant, size, children, ...props }, ref) => {
-  return (
-    <button
-      className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ${className}`}
-      ref={ref}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-});
+const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <button
+        className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ${className}`}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
 
 // Accordion Components
-const AccordionItem = ({ title, children }) => {
+const AccordionItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   return (
@@ -43,11 +47,11 @@ const AccordionItem = ({ title, children }) => {
   );
 };
 
-const Navbar = ({ cartCount, toggleCart }) => {
+const Navbar: React.FC<{ cartCount: number; toggleCart: () => void }> = ({ cartCount, toggleCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
@@ -59,8 +63,8 @@ const Navbar = ({ cartCount, toggleCart }) => {
   };
 
   useEffect(() => {
-    const closeMenu = (e) => {
-      if (!e.target.closest("#side-menu") && e.target.id !== "menu-icon") {
+    const closeMenu = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest("#side-menu") && (e.target as HTMLElement).id !== "menu-icon") {
         setIsMenuOpen(false);
       }
     };
@@ -69,83 +73,80 @@ const Navbar = ({ cartCount, toggleCart }) => {
   }, []);
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 right-0 h-20 bg-white shadow-sm z-50 px-8">
-        <div className="flex items-center justify-between h-full max-w-[1400px] mx-auto">
-          {/* Left: Menu Icon */}
-          <div className="flex items-center space-x-4 text-black">
-            <img
-              src={menu}
-              alt=""
-              className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-              id="menu-icon"
-              onClick={toggleMenu}
+    <nav className="flex items-center justify-between h-20 bg-white fixed top-0 left-0 right-0 z-50 px-8">
+      {/* Left: Menu Icon */}
+      <div className="flex items-center space-x-4 text-black">
+        <img
+          src={menu}
+          alt=""
+          className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
+          id="menu-icon"
+          onClick={toggleMenu}
+        />
+        {isSearchOpen && (
+          <div className="relative flex-1" id="search-input">
+            <input
+              type="text"
+              className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none w-full"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              ref={searchInputRef}
             />
-            {isSearchOpen && (
-              <div className="relative flex-1" id="search-input">
-                <input
-                  type="text"
-                  className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none w-full"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  ref={searchInputRef}
-                />
-              </div>
-            )}
-            {!isSearchOpen && (
-              <img
-                src={search}
-                alt="search icon"
-                className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-                id="search-icon"
-                onClick={toggleSearch}
-              />
-            )}
           </div>
+        )}
+        {!isSearchOpen && (
+          <img
+            src={search}
+            alt="search icon"
+            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
+            id="search-icon"
+            onClick={toggleSearch}
+          />
+        )}
+      </div>
 
-          {/* Center: Logo */}
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <a href="/">
-              <div className="flex justify-center items-center">
-                <img src={logo} alt="Logo" className="h-16 w-16" />
-              </div>
-            </a>
+      {/* Center: Logo */}
+      <div className="absolute left-1/2 transform -translate-x-1/2">
+        <a href="/">
+          <div className="flex justify-center items-center">
+            <img src={logo} alt="Logo" className="h-16 w-16" />
           </div>
+        </a>
+      </div>
 
-          {/* Right: User and Cart */}
-          <div className="flex items-center space-x-4 text-black">
-            <Link to="/login">
-              <img
-                src={user}
-                alt="User Icon"
-                className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10"
-              />
-            </Link>
-            <div className="relative">
-              <img
-                src={shopping}
-                alt="Shopping Cart Icon"
-                className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-                onClick={toggleCart}
-              />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                  {cartCount}
-                </span>
-              )}
-            </div>
-          </div>
+      {/* Right: User and Cart */}
+      <div className="flex items-center space-x-4 text-black">
+        <Link to="/login">
+          <img
+            src={user}
+            alt="User Icon"
+            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10"
+          />
+        </Link>
+        <div className="relative">
+          <img
+            src={shopping}
+            alt="Shopping Cart Icon"
+            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
+            onClick={toggleCart}
+          />
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {cartCount}
+            </span>
+          )}
         </div>
-      </nav>
+      </div>
 
       {/* Side Menu */}
       <div
-        className={`fixed top-0 left-0 h-screen w-[410px] bg-black/90 text-white z-[60] transform transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen w-[410px] bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         id="side-menu"
       >
+        {/* Close Icon */}
         <div className="flex justify-end mb-8">
             {/* <i
               className="fa fa-times text-3xl cursor-pointer hover:text-gray-400"
@@ -197,11 +198,18 @@ const Navbar = ({ cartCount, toggleCart }) => {
           </div>
         </div>
       </div>
-    </>
+    </nav>
   );
 };
 
-const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkout, closeCart }) => {
+const CartMenu: React.FC<{
+  cart: Array<{ id: number; name: string; price: number; size: string; quantity: number }>;
+  updateQuantity: (id: number, newQuantity: number) => void;
+  removeFromCart: (id: number) => void;
+  applyDiscount: (code: string) => void;
+  checkout: () => void;
+  closeCart: () => void;
+}> = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkout, closeCart }) => {
   const [discountCode, setDiscountCode] = useState('');
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -223,7 +231,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
                 <div>
                   <h3 className="font-bold text-lg">{item.name}</h3>
                   <p className="text-gray-600">Size: {item.size}</p>
-                  <p className="text-gray-600">€{item.price} x {item.quantity}</p>
+                  <p className="text-gray-600">₹{item.price} x {item.quantity}</p>
                 </div>
                 <button onClick={() => removeFromCart(item.id)} className="text-black hover:text-red-500 transition-colors">
                   <i className="fa fa-trash"></i>
@@ -256,7 +264,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
         </div>
         <div className="flex justify-between items-center mb-4">
           <span className="text-lg font-bold">Total:</span>
-          <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
+          <span className="text-2xl font-bold">€{totalPrice.toFixed(2)}</span>
         </div>
         <button
           onClick={checkout}
@@ -269,10 +277,10 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
   );
 };
 
-const ProductPage = () => {
+const ProductPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState('L');
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<Array<{ id: number; name: string; price: number; size: string; quantity: number }>>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const product = {
@@ -282,12 +290,9 @@ const ProductPage = () => {
     images: [
       'https://picsum.photos/800/800?random=1',
       'https://picsum.photos/800/800?random=2',
-      'https://picsum.photos/800/800?random=3',
-      'https://picsum.photos/800/800?random=4',
-      'https://picsum.photos/800/800?random=5'
+      'https://picsum.photos/800/800?random=3'
     ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-    
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   };
 
   const addToCart = () => {
@@ -315,7 +320,7 @@ const ProductPage = () => {
     });
   };
 
-  const updateQuantity = (id, newQuantity) => {
+  const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     setCart(prevCart =>
       prevCart.map(item =>
@@ -324,11 +329,11 @@ const ProductPage = () => {
     );
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id: number) => {
     setCart(prevCart => prevCart.filter(item => item.id !== id));
   };
 
-  const applyDiscount = (code) => {
+  const applyDiscount = (code: string) => {
     console.log(`Applying discount with code: ${code}`);
   };
 
@@ -346,26 +351,26 @@ const ProductPage = () => {
     <div className="min-h-screen bg-white">
       <Navbar cartCount={cartCount} toggleCart={toggleCart} />
 
-      <main className="container mx-auto px-4 pt-24">
-        <div className="grid md:grid-cols-2 gap-8">
+      <main className="container mx-auto px-4 pt-28">
+        <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* Product Images */}
           <div className="relative">
             <img
               src={product.images[currentImageIndex]}
-alt={product.name}
+              alt={product.name}
               className="w-[900px] h-[900px] object-cover"
             />
             <button
               onClick={() => setCurrentImageIndex(i => (i > 0 ? i - 1 : product.images.length - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/75 p-2 rounded-full hover:bg-white"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
             >
-              ◀️
+              ◀
             </button>
             <button
               onClick={() => setCurrentImageIndex(i => (i < product.images.length - 1 ? i + 1 : 0))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/75 p-2 rounded-full hover:bg-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
             >
-              ▶️
+              ▶
             </button>
           </div>
 
@@ -373,7 +378,7 @@ alt={product.name}
           <div className="space-y-6">
             <div>
               <h1 className="text-2xl font-medium">{product.name}</h1>
-              <p className="text-xl mt-2">₹{product.price.toFixed(2)}</p>
+              <p className="text-xl mt-2">€{product.price.toFixed(2)}</p>
             </div>
 
             {/* Size Selection */}
@@ -403,10 +408,10 @@ alt={product.name}
             </div>
 
             {/* Shipping Info */}
-            {/* <div className="text-sm text-gray-600 space-y-1">
+            <div className="text-sm text-gray-600 space-y-1">
               <p>Italy free shipping over €200.</p>
               <p>Worldwide free shipping over €350.</p>
-            </div> */}
+            </div>
 
             {/* Accordion Sections */}
             <div className="space-y-4">
@@ -456,7 +461,7 @@ alt={product.name}
 
       {/* Cart Modal */}
       {isCartOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[70]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-30">
           <CartMenu 
             cart={cart}
             updateQuantity={updateQuantity}
@@ -472,3 +477,4 @@ alt={product.name}
 };
 
 export default ProductPage;
+
