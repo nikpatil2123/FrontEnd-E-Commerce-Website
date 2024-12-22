@@ -6,25 +6,70 @@ import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png"
 import menu from "../assets/MENU.png";
 
-// Sample product data
 const products = [
   {
     id: 1,
-    name: 'BasicITEM1',
-    price: 48,
-    image: 'https://via.placeholder.com/300x400',
+    name: '545 HALF ZIP HEAVY COTTON SWEATER WINE RED',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=1',
+    soldOut: false,
+    color: 'Wine Red'
   },
   {
     id: 2,
-    name: 'basicITEM2',
-    price: 35,
-    image: 'https://via.placeholder.com/300x400',
+    name: '545 HALF ZIP HEAVY COTTON SWEATER GLACIER',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=2',
+    soldOut: true,
+    color: 'Glacier'
   },
   {
     id: 3,
-    name: 'BasicITEM3',
-    price: 70,
-    image: 'https://via.placeholder.com/300x400',
+    name: '545 HALF ZIP HEAVY COTTON SWEATER MINT',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=3',
+    soldOut: true,
+    color: 'Mint'
+  },
+  {
+    id: 4,
+    name: '545 HALF ZIP HEAVY COTTON SWEATER ALMOND',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=4',
+    soldOut: true,
+    color: 'Almond'
+  },
+  {
+    id: 5,
+    name: '545 HALF ZIP HEAVY COTTON SWEATER WINE RED',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=5',
+    soldOut: true,
+    color: 'Wine Red'
+  },
+  {
+    id: 6,
+    name: '545 HALF ZIP HEAVY COTTON SWEATER GLACIER',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=6',
+    soldOut: true,
+    color: 'Glacier'
+  },
+  {
+    id: 7,
+    name: '545 HALF ZIP HEAVY COTTON SWEATER MINT',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=7',
+    soldOut: true,
+    color: 'Mint'
+  },
+  {
+    id: 8,
+    name: '545 HALF ZIP HEAVY COTTON SWEATER ALMOND',
+    price: 139.00,
+    image: 'https://picsum.photos/800/800?random=1',
+    soldOut: true,
+    color: 'Almond'
   }
 ];
 
@@ -58,7 +103,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-8 py-12 pt-12">
+    <nav className="flex items-center justify-between h-20 bg-white fixed top-0 left-0 right-0 z-50 px-8 shadow-md">
       {/* Left: Menu Icon */}
       <div className="flex items-center space-x-4 text-black">
         <img
@@ -67,7 +112,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
           className="text-xl p-2 hover:text-gray-400 w-10 h-10"
           id="menu-icon"
           onClick={toggleMenu}
-
         />
         {isSearchOpen && (
           <div className="relative flex-1" id="search-input">
@@ -87,11 +131,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
           </div>
         )}
         {!isSearchOpen && (
-          // <i
-          //   className="fa fa-search text-xl p-2 hover:text-gray-400 cursor-pointer"
-          //   id="search-icon"
-          //   onClick={toggleSearch}
-          // ></i>
           <img
             src={search}
             alt="search icon"
@@ -109,7 +148,6 @@ const Navbar = ({ cartCount, toggleCart }) => {
             <img src={logo} alt="Logo" className="h-16 w-16" />
           </div>
         </a>
-
       </div>
 
       {/* Right: Wishlist and Cart */}
@@ -138,18 +176,19 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
       {/* Side Menu */}
       <div
-        className={`fixed top-0 left-0 h-screen w-[300px] bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 h-screen w-[300px] bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
         id="side-menu"
         style={{ width: "410px" }}
       >
         <div className="p-6 flex flex-col h-full">
           {/* Close Icon */}
           <div className="flex justify-end mb-8">
-            <i
+            {/* <i
               className="fa fa-times text-3xl cursor-pointer hover:text-gray-400"
               onClick={toggleMenu}
-            ></i>
+            ></i> */}
           </div>
 
           {/* Main Menu Links */}
@@ -159,22 +198,16 @@ const Navbar = ({ cartCount, toggleCart }) => {
             </a>
             <Link to="/shop" className="flex items-center justify-between hover:text-gray-400">
               <span>SHOP ALL </span>
-              {/* <i className="fa fa-chevron-right text-sm"></i> */}
             </Link>
             <Link to="/LTD/:id" className="flex items-center justify-between hover:text-gray-400">
               <span>LTD. ED.</span> <i className="fa fa-chevron-right text-sm"></i>
             </Link>
             <Link to="/Basic/:id" className="flex items-center justify-between hover:text-gray-400">
               <span>BASIC</span>
-              {/* <i className="fa fa-chevron-right text-sm"></i> */}
             </Link>
             <Link to="/Limited/:id" className="flex items-center justify-between hover:text-gray-400">
               <span>LIMITED STOCKS</span>
-              {/* <i className="fa fa-chevron-right text-sm"></i> */}
             </Link>
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              {/* <span>ABOUT US</span> <i className="fa fa-chevron-right text-sm"></i> */}
-            </a>
           </div>
 
           {/* Footer Links */}
@@ -209,23 +242,42 @@ const Navbar = ({ cartCount, toggleCart }) => {
 };
 
 const ProductCard = ({ product, onAddToCart }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
-    <div className="product-card block bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 p-5 text-left">
-      <Link to={`/product/${product.id}`} className="block mb-2">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-auto object-cover"
-        />
-        <h3 className="mt-2 mb-1 text-base text-gray-600">{product.name}</h3>
-        <p className="text-xl text-gray-800 font-bold">₹{product.price}</p>
+    <div className="product-card block bg-white overflow-hidden transition-transform duration-300 hover:scale-105 relative margin-10">
+      {product.soldOut && (
+        <span className="absolute top-4 right-4 z-10 bg-white px-2 py-1 text-xs font-medium text-black border border-gray-200 rounded">
+          Sold Out
+        </span>
+      )}
+      <Link to={`/product/${product.id}`} className="block">
+        <div className="aspect-[3/4] relative overflow-hidden">
+          {!imageError ? (
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+              Image not available
+            </div>
+          )}
+        </div>
+        <div className="p-4">
+          <div className="flex justify-between items-start">
+            <h3 className="text-sm font-medium text-gray-900 flex-1">{product.name}</h3>
+            <p className="text-sm font-medium text-gray-900 ml-2">₹{product.price.toFixed(2)}</p>
+          </div>
+          <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+        </div>
       </Link>
-      {/* <button 
-        onClick={() => onAddToCart(product)}
-        className="w-full py-2 bg-black text-white font-bold rounded-md hover:bg-green-700 transition-colors"
-      >
-        Add to Cart
-      </button> */}
     </div>
   );
 };
@@ -252,7 +304,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-lg">{item.name}</h3>
-                  <p className="text-gray-600">₹{item.price} x {item.quantity}</p>
+                  <p className="text-gray-600">€{item.price} x {item.quantity}</p>
                 </div>
                 <button onClick={() => removeFromCart(item.id)} className="text-black hover:text-red-500 transition-colors">
                   <i className="fa fa-trash"></i>
@@ -328,12 +380,10 @@ const ProductCardsPage = () => {
   };
 
   const applyDiscount = (code) => {
-    // Implement discount logic here
     console.log(`Applying discount with code: ${code}`);
   };
 
   const checkout = () => {
-    // Implement checkout logic here
     console.log('Proceeding to checkout');
   };
 
@@ -344,17 +394,19 @@ const ProductCardsPage = () => {
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-white min-h-screen">
       <Navbar cartCount={cartCount} toggleCart={toggleCart} />
 
-      <div className="flex flex-wrap justify-center gap-5 p-10 mt-16">
-        {products.map(product => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={addToCart}
-          />
-        ))}
+      <div className="w-full px-4 pt-24">
+        <div className="grid grid-cols-4 gap-4">
+          {products.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={addToCart}
+            />
+          ))}
+        </div>
       </div>
 
       {isCartOpen && (
@@ -374,4 +426,3 @@ const ProductCardsPage = () => {
 };
 
 export default ProductCardsPage;
-

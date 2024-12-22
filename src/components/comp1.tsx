@@ -235,7 +235,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
             {/* Icons below the links */}
             <div className="flex space-x-4 mt-4 ">
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/tristanaindia/" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-instagram text-gray-400 hover:text-gray-300 text-lg"></i>
               </a>
               <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
