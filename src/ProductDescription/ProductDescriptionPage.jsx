@@ -396,8 +396,10 @@ const ProductCardsPage = () => {
   return (
     <div className="bg-white min-h-screen">
       <Navbar cartCount={cartCount} toggleCart={toggleCart} />
-
-      <div className="w-full px-4 pt-24">
+      <div className="w-full px-4 pt-24 pb-8">
+        <h1 className="text-3xl font-bold text-left" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>SHOP ALL</h1>
+      </div>
+      <div className="w-full px-4">
         <div className="grid grid-cols-4 gap-4">
           {products.map(product => (
             <ProductCard
