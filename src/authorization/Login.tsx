@@ -310,25 +310,25 @@ const LoginPage = () => {
 };
 
 // Footer Component
-const Footer = () => {
-  return (
-    <footer className="bg-gray-800 text-white py-6">
-      <div className="container mx-auto flex justify-between items-center">
-        <div>
-          <h3 className="text-xl font-bold">TRISTANA</h3>
-          <p className="text-sm">© 2024 All Rights Reserved</p>
-        </div>
-        {/* Footer Links */}
-        <div className="flex space-x-4">
-          {/* Ensure these links point to actual pages or routes */}
-          <a href="#" className="hover:text-gray-300">Privacy Policy</a>
-          <a href="#" className="hover:text-gray-300">Terms of Service</a>
-          <a href="#" className="hover:text-gray-300">Contact</a>
-        </div>
-      </div>
-    </footer>
-  );
-};
+// const Footer = () => {
+//   return (
+//     <footer className="bg-gray-800 text-white py-6">
+//       <div className="container mx-auto flex justify-between items-center">
+//         <div>
+//           <h3 className="text-xl font-bold">TRISTANA</h3>
+//           <p className="text-sm">© 2024 All Rights Reserved</p>
+//         </div>
+//         {/* Footer Links */}
+//         <div className="flex space-x-4">
+//           {/* Ensure these links point to actual pages or routes */}
+//           <a href="#" className="hover:text-gray-300">Privacy Policy</a>
+//           <a href="#" className="hover:text-gray-300">Terms of Service</a>
+//           <a href="#" className="hover:text-gray-300">Contact</a>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
 
 // Main App Component
 const App1 = () => {
@@ -342,7 +342,7 @@ const App1 = () => {
         <LoginPage />
       </main>
       {/* Footer should be outside main content */}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

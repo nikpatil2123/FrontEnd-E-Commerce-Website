@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import logo from "../assets/blacklogo.png";
 import { Link } from "react-router-dom";
+import logo from "../assets/blacklogo.png";
 import hero from "../assets/banner.png";
 import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
@@ -9,18 +9,18 @@ import menu from "../assets/MENU.png";
 
 const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkout, closeCart }) => {
   const [discountCode, setDiscountCode] = useState('');
-
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <div className="fixed top-0 right-0 h-screen w-full max-w-md bg-white shadow-lg z-40 overflow-hidden flex flex-col">
-      <div className="p-6 bg-black text-white flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Your Cart</h2>
+    <div className="fixed top-0 right-0 h-screen w-full sm:max-w-md bg-white shadow-lg z-40 overflow-hidden flex flex-col">
+      <div className="p-4 sm:p-6 bg-black text-white flex justify-between items-center">
+        <h2 className="text-xl sm:text-2xl font-bold">Your Cart</h2>
         <button onClick={closeCart} className="text-white hover:text-gray-300 transition-colors">
-          <i className="fa fa-times text-2xl"></i>
+          <i className="fa fa-times text-xl sm:text-2xl"></i>
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto p-6">
+      
+      <div className="flex-grow overflow-y-auto p-4 sm:p-6">
         {cart.length === 0 ? (
           <p className="text-gray-500 text-center">Your cart is empty</p>
         ) : (
@@ -28,7 +28,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
             <div key={item.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h3 className="font-bold text-lg">{item.name}</h3>
+                  <h3 className="font-bold text-base sm:text-lg">{item.name}</h3>
                   <p className="text-gray-600">₹{item.price} x {item.quantity}</p>
                 </div>
                 <button onClick={() => removeFromCart(item.id)} className="text-black hover:text-red-500 transition-colors">
@@ -36,15 +36,22 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
                 </button>
               </div>
               <div className="flex items-center mt-2">
-                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="bg-gray-200 text-black px-3 py-1 rounded-l hover:bg-gray-300 transition-colors">-</button>
+                <button 
+                  onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                  className="bg-gray-200 text-black px-3 py-1 rounded-l hover:bg-gray-300 transition-colors"
+                >-</button>
                 <span className="bg-gray-100 px-4 py-1">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="bg-gray-200 text-black px-3 py-1 rounded-r hover:bg-gray-300 transition-colors">+</button>
+                <button 
+                  onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+                  className="bg-gray-200 text-black px-3 py-1 rounded-r hover:bg-gray-300 transition-colors"
+                >+</button>
               </div>
             </div>
           ))
         )}
       </div>
-      <div className="p-6 bg-gray-50 border-t border-gray-200">
+
+      <div className="p-4 sm:p-6 bg-gray-50 border-t border-gray-200">
         <div className="mb-4">
           <input
             type="text"
@@ -56,20 +63,16 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
           <button
             onClick={() => applyDiscount(discountCode)}
             className="w-full mt-2 bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors"
-          >
-            Apply Discount
-          </button>
+          >Apply Discount</button>
         </div>
         <div className="flex justify-between items-center mb-4">
           <span className="text-lg font-bold">Total:</span>
-          <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
+          <span className="text-xl sm:text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
         </div>
         <button
           onClick={checkout}
           className="w-full bg-black text-white py-3 rounded text-lg font-bold hover:bg-gray-800 transition-colors"
-        >
-          Checkout
-        </button>
+        >Checkout</button>
       </div>
     </div>
   );
@@ -79,7 +82,18 @@ const Navbar = ({ cartCount, toggleCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
@@ -112,17 +126,17 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
   useEffect(() => {
     if (isSearchOpen) {
-      searchInputRef.current.focus();
+      searchInputRef.current?.focus();
     }
   }, [isSearchOpen]);
 
   return (
-    <nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-8 py-12 pt-12">
+    <nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-4 sm:px-8 py-8 sm:py-12 pt-12">
       {/* Left: Menu Icon and Search */}
       <div className="flex items-center space-x-4 text-black">
-        <img 
-          src={menu} 
-          alt="" 
+        <img
+          src={menu}
+          alt=""
           className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
           id="menu-icon"
           onClick={toggleMenu}
@@ -131,27 +145,22 @@ const Navbar = ({ cartCount, toggleCart }) => {
           <div className="relative flex-1" id="search-input">
             <input
               type="text"
-              className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none w-full"
+              className="bg-gray-800 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full focus:outline-none w-full text-sm sm:text-base"
               placeholder="Search"
               value={searchQuery}
               onChange={handleSearch}
               ref={searchInputRef}
             />
-            <i
-              className="fa fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-400 cursor-pointer"
-              id="search-icon"
-              onClick={toggleSearch}
-            ></i>
           </div>
         )}
         {!isSearchOpen && (
-          <img 
-            src={search} 
-            alt="search icon" 
-            className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
-            id="search-icon"
-            onClick={toggleSearch}
-          />
+          <img
+          src={search}
+          alt="search icon"
+          className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
+          id="search-icon"
+          onClick={toggleSearch}
+        />
         )}
       </div>
 
@@ -167,16 +176,16 @@ const Navbar = ({ cartCount, toggleCart }) => {
       {/* Right: User and Cart */}
       <div className="flex items-center space-x-4 text-black">
         <Link to="/login">
-          <img 
-            src={user} 
-            alt="User Icon" 
+          <img
+            src={user}
+            alt="User Icon"
             className="text-xl p-2 hover:text-gray-400 w-10 h-10"
           />
         </Link>
         <div className="relative">
-          <img 
-            src={shopping} 
-            alt="Shopping Cart Icon" 
+          <img
+            src={shopping}
+            alt="Shopping Cart Icon"
             className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
             onClick={toggleCart}
           />
@@ -190,62 +199,57 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
       {/* Side Menu */}
       <div
-        className={`fixed top-0 left-0 h-screen w-2/5 bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } ${
+          isMobile ? "w-[200px]" : "w-[410px]"
         }`}
         id="side-menu"
-        style={{ width: "410px" }}
       >
-        <div className="p-6 flex flex-col h-full">
-          {/* Close Icon */}
-          <div className="flex justify-end mb-8">
+        <div className="p-4 sm:p-6 flex flex-col h-full">
+          <div className="flex justify-end mb-4 sm:mb-8">
+            <button 
+              onClick={toggleMenu}
+              className="text-white hover:text-gray-300 transition-colors p-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
           {/* Main Menu Links */}
-          <div className="flex-1 space-y-6 text-lg font-regular">
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>HOME</span> 
-            </a>
-            <Link to="/shop" className="flex items-center justify-between hover:text-gray-400">
-              <span>SHOP ALL </span> 
-            </Link>
-            <Link to="/LTD/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>LTD. ED.</span> 
-            </Link>
-            <Link to="/Basic/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>BASIC</span> 
-            </Link>
-            <Link to="/Limited/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>LIMITED STOCKS</span> 
-            </Link>
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-            </a>
+          <div className="flex-1 space-y-4 sm:space-y-6 text-base sm:text-lg font-regular">
+            <a href="/" className="block hover:text-gray-400 py-2">HOME</a>
+            <Link to="/shop" className="block hover:text-gray-400 py-2">SHOP ALL</Link>
+            <Link to="/LTD/:id" className="block hover:text-gray-400 py-2">LTD. ED.</Link>
+            <Link to="/Basic/:id" className="block hover:text-gray-400 py-2">BASIC</Link>
+            <Link to="/Limited/:id" className="block hover:text-gray-400 py-2">LIMITED STOCKS</Link>
           </div>
 
           {/* Footer Links */}
-          <div className="space-y-5 text-sm text-gray-400 mt-4">
-            <Link to="/CustomerService" className="block hover:text-gray-300">Customer Service</Link>
-            <Link to="/Orders" className="block hover:text-gray-300">Order Management</Link>
-            <Link to="/ReturnPolicy" className="block hover:text-gray-300">Return Policy</Link>
-            <Link to="/Privacy" className="block hover:text-gray-300">Privacy</Link>
-            <Link to="/FAQ" className="block hover:text-gray-300">FAQ</Link>
-            <Link to="/Cookies" className="block hover:text-gray-300">Cookies</Link>
-            <Link to="/T&C" className="block hover:text-gray-300">Terms & Condition</Link>
+          <div className="space-y-3 sm:space-y-5 text-xs sm:text-sm text-gray-400 mt-4">
+            <Link to="/CustomerService" className="block hover:text-gray-300 py-1">Customer Service</Link>
+            <Link to="/Orders" className="block hover:text-gray-300 py-1">Order Management</Link>
+            <Link to="/ReturnPolicy" className="block hover:text-gray-300 py-1">Return Policy</Link>
+            <Link to="/Privacy" className="block hover:text-gray-300 py-1">Privacy</Link>
+            <Link to="/FAQ" className="block hover:text-gray-300 py-1">FAQ</Link>
+            <Link to="/Cookies" className="block hover:text-gray-300 py-1">Cookies</Link>
+            <Link to="/T&C" className="block hover:text-gray-300 py-1">Terms & Condition</Link>
 
-
-            {/* Icons below the links */}
-            <div className="flex space-x-4 mt-4 ">
-              <a href="https://www.instagram.com/tristanaindia/" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-instagram text-gray-400 hover:text-gray-300 text-lg"></i>
+            {/* Social Icons */}
+            <div className="flex space-x-4 mt-6 pt-4 border-t border-gray-700">
+              <a href="https://www.instagram.com/tristanaindia/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-300">
+                <i className="fab fa-instagram text-lg sm:text-xl"></i>
               </a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-linkedin-in text-gray-400 hover:text-gray-300 text-lg"></i>
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-300">
+                <i className="fab fa-linkedin-in text-lg sm:text-xl"></i>
               </a>
-              <a href="tel:+123456789" target="_blank" rel="noopener noreferrer">
-                <i className="fas fa-phone-alt text-gray-400 hover:text-gray-300 text-lg"></i>
+              <a href="tel:+123456789" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-300">
+                <i className="fas fa-phone-alt text-lg sm:text-xl"></i>
               </a>
-              <a href="mailto:someone@example.com" target="_blank" rel="noopener noreferrer">
-                <i className="fas fa-envelope text-gray-400 hover:text-gray-300 text-lg"></i>
+              <a href="mailto:someone@example.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-300">
+                <i className="fas fa-envelope text-lg sm:text-xl"></i>
               </a>
             </div>
           </div>
@@ -329,11 +333,8 @@ const Comp1 = () => {
             closeCart={toggleCart}
           />
         </div>
-      )}
-    </div>
-  );
-};
-
-export default Comp1;
-
+      )}</div>
+    );
+  };
   
+  export default Comp1;

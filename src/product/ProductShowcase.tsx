@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import logo from '../assets/blacklogo.png';
 import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
+import lefticom from "../assets/left-arrow.png"
 
 // Button Component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }>(
@@ -362,15 +364,17 @@ const ProductPage: React.FC = () => {
             />
             <button
               onClick={() => setCurrentImageIndex(i => (i > 0 ? i - 1 : product.images.length - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
-            >
-              ◀
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        aria-label="Previous image"
+      >
+              <ChevronLeft className="w-6 h-6 text-gray-800" />
             </button>
             <button
               onClick={() => setCurrentImageIndex(i => (i < product.images.length - 1 ? i + 1 : 0))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              aria-label="Next image"
             >
-              ▶
+              <ChevronRight className="w-6 h-6 text-gray-800" />
             </button>
           </div>
 
