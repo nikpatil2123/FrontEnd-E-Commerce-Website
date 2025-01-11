@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+// Importing images
 import logo from '../assets/blacklogo.png';
 import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
-import lefticom from "../assets/left-arrow.png"
 
 // Button Component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }>(
@@ -25,7 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HT
 
 Button.displayName = 'Button';
 
-// Accordion Components
+// Accordion Component
 const AccordionItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   
@@ -49,6 +50,7 @@ const AccordionItem: React.FC<{ title: string; children: React.ReactNode }> = ({
   );
 };
 
+// Navbar Component
 const Navbar: React.FC<{ cartCount: number; toggleCart: () => void }> = ({ cartCount, toggleCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -148,13 +150,6 @@ const Navbar: React.FC<{ cartCount: number; toggleCart: () => void }> = ({ cartC
         }`}
         id="side-menu"
       >
-        {/* Close Icon */}
-        <div className="flex justify-end mb-8">
-            {/* <i
-              className="fa fa-times text-3xl cursor-pointer hover:text-gray-400"
-              onClick={toggleMenu}
-            ></i> */}
-          </div>
         <div className="p-6 flex flex-col h-full">
           <div className="flex-1 space-y-6 text-lg font-regular">
             <a href="/" className="flex items-center justify-between hover:text-gray-400">
@@ -204,6 +199,7 @@ const Navbar: React.FC<{ cartCount: number; toggleCart: () => void }> = ({ cartC
   );
 };
 
+// Cart Menu Component
 const CartMenu: React.FC<{
   cart: Array<{ id: number; name: string; price: number; size: string; quantity: number }>;
   updateQuantity: (id: number, newQuantity: number) => void;
@@ -266,8 +262,9 @@ const CartMenu: React.FC<{
         </div>
         <div className="flex justify-between items-center mb-4">
           <span className="text-lg font-bold">Total:</span>
-          <span className="text-2xl font-bold">€{totalPrice.toFixed(2)}</span>
+          <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
         </div>
+        
         <button
           onClick={checkout}
           className="w-full bg-black text-white py-3 rounded text-lg font-bold hover:bg-gray-800 transition-colors"
@@ -279,47 +276,70 @@ const CartMenu: React.FC<{
   );
 };
 
+// Main Product Page Component
 const ProductPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Get product ID from URL
+  const navigate = useNavigate();
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState('L');
   const [cart, setCart] = useState<Array<{ id: number; name: string; price: number; size: string; quantity: number }>>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const product = {
-    id: 1,
-    name: '545 HALF ZIP HEAVY COTTON SWEATER WINE RED',
-    price: 139.00,
-    images: [
-      'https://picsum.photos/800/800?random=1',
-      'https://picsum.photos/800/800?random=2',
-      'https://picsum.photos/800/800?random=3'
-    ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
-  };
-
-  const addToCart = () => {
-    const item = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      size: selectedSize,
-      quantity: 1
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+        const data = await response.json();
+        
+        const transformedProduct = {
+          id: data.id,
+          name: data.title,
+          price: data.price,
+          images: [data.image, data.image, data.image], // Add multiple images if needed
+          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+          description: data.description,
+        };
+        
+        setProduct(transformedProduct);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        navigate('/'); // Redirect to home page on error
+      }
     };
 
-    setCart(prevCart => {
-      const existingItem = prevCart.find(i => 
-        i.id === item.id && i.size === item.size
-      );
-      
-      if (existingItem) {
-        return prevCart.map(i =>
-          i.id === item.id && i.size === item.size
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+    if (id) {
+      fetchProduct();
+    }
+  }, [id, navigate]);
+
+  const addToCart = () => {
+    if (product) {
+      const newItem = {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        size: selectedSize,
+        quantity: 1
+      };
+
+      setCart(prevCart => {
+        const existingItem = prevCart.find(i => 
+          i.id === newItem.id && i.size === newItem.size
         );
-      }
-      return [...prevCart, item];
-    });
+        
+        if (existingItem) {
+          return prevCart.map(i =>
+            i.id === newItem.id && i.size === newItem.size
+              ? { ...i, quantity: i.quantity + 1 }
+              : i
+          );
+        }
+        return [...prevCart, newItem];
+      });
+    }
   };
 
   const updateQuantity = (id: number, newQuantity: number) => {
@@ -337,10 +357,12 @@ const ProductPage: React.FC = () => {
 
   const applyDiscount = (code: string) => {
     console.log(`Applying discount with code: ${code}`);
+    // Implement discount logic here
   };
 
   const checkout = () => {
     console.log('Proceeding to checkout');
+    // Implement checkout logic here
   };
 
   const toggleCart = () => {
@@ -349,10 +371,18 @@ const ProductPage: React.FC = () => {
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+  // Show loading state
+  if (loading || !product) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar cartCount={cartCount} toggleCart={toggleCart} />
-
       <main className="container mx-auto px-4 pt-28">
         <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* Product Images */}
@@ -360,13 +390,13 @@ const ProductPage: React.FC = () => {
             <img
               src={product.images[currentImageIndex]}
               alt={product.name}
-              className="w-[900px] h-[900px] object-cover"
+              className="w-full h-auto object-cover"
             />
             <button
               onClick={() => setCurrentImageIndex(i => (i > 0 ? i - 1 : product.images.length - 1))}
               className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-        aria-label="Previous image"
-      >
+              aria-label="Previous image"
+            >
               <ChevronLeft className="w-6 h-6 text-gray-800" />
             </button>
             <button
@@ -382,7 +412,7 @@ const ProductPage: React.FC = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-2xl font-medium">{product.name}</h1>
-              <p className="text-xl mt-2">€{product.price.toFixed(2)}</p>
+              <p className="text-xl mt-2">₹{product.price.toFixed(2)}</p>
             </div>
 
             {/* Size Selection */}
@@ -413,15 +443,15 @@ const ProductPage: React.FC = () => {
 
             {/* Shipping Info */}
             <div className="text-sm text-gray-600 space-y-1">
-              <p>Italy free shipping over €200.</p>
-              <p>Worldwide free shipping over €350.</p>
+              <p>Italy free shipping over ₹200.</p>
+              <p>Worldwide free shipping over ₹350.</p>
             </div>
 
             {/* Accordion Sections */}
             <div className="space-y-4">
               <AccordionItem title="DETAILS">
                 <p className="text-sm text-gray-600">
-                  Heavy cotton sweater with half-zip design. Made from premium materials for ultimate comfort and durability.
+                  {product.description}
                 </p>
               </AccordionItem>
 
@@ -450,7 +480,7 @@ const ProductPage: React.FC = () => {
                 <div className="space-y-4 text-sm text-gray-600">
                   <div>
                     <h4 className="font-medium">Shipping</h4>
-                    <p>Free shipping on orders over €350 worldwide. Standard delivery 3-5 working days.</p>
+                    <p>Free shipping on orders over ₹350 worldwide. Standard delivery 3-5 working days.</p>
                   </div>
                   <div>
                     <h4 className="font-medium">Returns</h4>

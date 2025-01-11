@@ -15,6 +15,7 @@ import Privacy from './Footer/Privacy.jsx';
 import FAQ from './Footer/FAQ.jsx';
 import Cookies from './Footer/Cookies.jsx';
 import TermsAndCondition from './Footer/TermsAndCondition.jsx';
+// import Checkout from './Checkout/CheckOut.jsx';
 function App() {
   // Define routes using createBrowserRouter
   const router = createBrowserRouter([
@@ -73,7 +74,11 @@ function App() {
     {
       path: "/T&C", // Product page route
       element: <TermsAndCondition />,
-    }
+    },
+    // {
+    //   path: "/CheckOut", // Product page route
+    //   element: <Checkout />,
+    // }
   ]);
 
   return (
