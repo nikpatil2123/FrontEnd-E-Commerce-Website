@@ -1,7 +1,6 @@
-import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App1 from './authorization/Login.tsx'; // Login component
 import Comp1 from './components/comp1.tsx'; // Home component
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './styles.css';
 import Comp2 from './ProductDescription/ProductDescriptionPage.jsx';
 import Product from './product/ProductShowcase.tsx';
@@ -15,7 +14,11 @@ import Privacy from './Footer/Privacy.jsx';
 import FAQ from './Footer/FAQ.jsx';
 import Cookies from './Footer/Cookies.jsx';
 import TermsAndCondition from './Footer/TermsAndCondition.jsx';
-// import Checkout from './Checkout/CheckOut.jsx';
+import AdminDashboard from '/src/admin/AdminDashboard.jsx';
+import Checkout from './Checkout/CheckOut.jsx';
+import ProductManagement from './admin/ProductManagement.jsx';
+import OrderStatus from './admin/Orderstatus.jsx';
+import HomeFeedManagement from './admin/HomeFeedManagement.jsx';
 function App() {
   // Define routes using createBrowserRouter
   const router = createBrowserRouter([
@@ -75,10 +78,31 @@ function App() {
       path: "/T&C", // Product page route
       element: <TermsAndCondition />,
     },
-    // {
-    //   path: "/CheckOut", // Product page route
-    //   element: <Checkout />,
-    // }
+		{
+			path: "/checkout", // Product page route
+			element: <Checkout />,
+		},
+		{
+			path: "/admin", // Product page route
+			element: <AdminDashboard />,
+		},
+		{
+			path: "/admin/products",
+			element: <ProductManagement />,
+		},
+		{
+			path: "/admin/orders",
+			element: <OrderStatus />
+		},
+		{
+			path: "/admin/homefeed",
+			element: <HomeFeedManagement />
+		}
+
+
+
+
+		
   ]);
 
   return (

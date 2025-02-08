@@ -264,13 +264,14 @@ const CartMenu: React.FC<{
           <span className="text-lg font-bold">Total:</span>
           <span className="text-2xl font-bold">₹{totalPrice.toFixed(2)}</span>
         </div>
-        
+        <Link to="/checkout">
         <button
           onClick={checkout}
           className="w-full bg-black text-white py-3 rounded text-lg font-bold hover:bg-gray-800 transition-colors"
         >
           Checkout
-        </button>
+				</button>
+				</Link>
       </div>
     </div>
   );
@@ -439,7 +440,18 @@ const ProductPage: React.FC = () => {
               >
                 ADD TO CART
               </Button>
-            </div>
+						</div>
+						<div>
+						<Link to="/checkout">
+						<Button 
+							
+							className="w-full py-6 text-lg bg-black text-white hover:bg-gray-800"
+							onClick={addToCart}
+						>
+							BUY NOW
+							</Button>
+							</Link>
+						</div>	
 
             {/* Shipping Info */}
             <div className="text-sm text-gray-600 space-y-1">
