@@ -11,6 +11,20 @@ const HomeFeedManagement = () => {
 
 	const [mediaPreview, setMediaPreview] = useState(null);
 
+	useEffect(() => {
+		// Fetch the current banner from the server
+		const fetchBanner = async () => {
+			try {
+				const response = await axios.get('http://localhost:5000/api/banner');
+				setMainBanner(response.data);
+			} catch (error) {
+				console.error('Error fetching banner:', error);
+			}
+		};
+
+		fetchBanner();
+	}, []);
+
 	const handleMediaUpload = (e) => {
 		const file = e.target.files[0];
 		if (file) {
@@ -30,13 +44,21 @@ const HomeFeedManagement = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			// Add your API call here to save the banner
-			console.log('Updating banner:', mainBanner);
+			const formData = new FormData();
+			formData.append('media', mainBanner.mediaUrl);
+			formData.append('mediaType', mainBanner.mediaType);
+			formData.append('title', mainBanner.title);
+			formData.append('active', mainBanner.active);
 
-			// Example API call:
-			// await axios.post('/api/banner/update', mainBanner);
+			const response = await axios.post('http://localhost:5000/api/banner/update', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			});
 
 			alert('Banner updated successfully!');
+			setMainBanner(response.data);
+			setMediaPreview(null);
 		} catch (error) {
 			console.error('Error updating banner:', error);
 		}

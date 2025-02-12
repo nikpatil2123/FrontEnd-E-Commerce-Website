@@ -19,6 +19,7 @@ const ProductManagement = () => {
 			XXL: 0
 		},
 		images: [],
+		discount: 0,
 		isLimited: false,
 		limitedQuantity: null
 	});
@@ -66,6 +67,7 @@ const ProductManagement = () => {
 				XXL: 0
 			},
 			images: [],
+			discount: 0,
 			isLimited: false,
 			limitedQuantity: null
 		});
@@ -154,6 +156,17 @@ const ProductManagement = () => {
 									))}
 								</div>
 							</div>
+
+							<div>
+								<label className="block text-sm font-medium mb-1">Discount (%)</label>
+								<input
+									type="number"
+									value={newProduct.discount}
+									onChange={(e) => setNewProduct({...newProduct, discount: e.target.value})}
+									className="w-full p-2 border rounded-lg"
+									required
+								/>
+							</div>
 						</div>
 
 						<div>
@@ -216,6 +229,7 @@ const ProductManagement = () => {
 										<th className="text-left p-2">Category</th>
 										<th className="text-left p-2">Price</th>
 										<th className="text-left p-2">Stock</th>
+										<th className="text-left p-2">Discount</th>
 										<th className="text-left p-2">Actions</th>
 									</tr>
 								</thead>
@@ -240,6 +254,7 @@ const ProductManagement = () => {
 													<div key={size}>{size}: {quantity}</div>
 												))}
 											</td>
+											<td className="p-2">{product.discount}%</td>
 											<td className="p-2">
 												<div className="flex gap-2">
 													<button

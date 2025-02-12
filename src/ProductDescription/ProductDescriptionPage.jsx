@@ -273,6 +273,7 @@ const ProductPage = () => {
 				const response = await fetch(API_URL);
 				if (!response.ok) throw new Error('Network response was not ok');
 				const data = await response.json();
+
 				const transformedData = data.map(item => ({
 					id: item.id,
 					name: item.title,
@@ -365,4 +366,3 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
-

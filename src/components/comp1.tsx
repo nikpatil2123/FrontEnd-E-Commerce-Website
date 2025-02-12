@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import logo from "../assets/blacklogo.png";
-import hero from "../assets/banner.png";
 import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
@@ -260,14 +260,39 @@ const Navbar = ({ cartCount, toggleCart }) => {
 };
 
 const HeroSection = () => {
+  const [banner, setBanner] = useState({ mediaUrl: '', mediaType: 'image' });
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/banner');
+        setBanner(response.data);
+      } catch (error) {
+        console.error('Error fetching banner:', error);
+      }
+    };
+
+    fetchBanner();
+  }, []);
+
   return (
     <Link to="/shop">
       <header className="relative h-screen flex items-center justify-center">
-        <img
-          src={hero}
-          alt="Tristana Collection"
-          className="hero-image absolute w-full h-full object-cover"
-        />
+        {banner.mediaType === 'video' ? (
+          <video
+            src={banner.mediaUrl}
+            autoPlay
+            loop
+            muted
+            className="hero-image absolute w-full h-full object-cover"
+          />
+        ) : (
+          <img
+            src={banner.mediaUrl}
+            alt="Tristana Collection"
+            className="hero-image absolute w-full h-full object-cover"
+          />
+        )}
       </header>
     </Link>
   );
@@ -333,8 +358,9 @@ const Comp1 = () => {
             closeCart={toggleCart}
           />
         </div>
-      )}</div>
-    );
-  };
-  
-  export default Comp1;
+      )}
+    </div>
+  );
+};
+
+export default Comp1;

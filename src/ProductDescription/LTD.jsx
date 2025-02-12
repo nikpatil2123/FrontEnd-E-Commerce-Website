@@ -7,7 +7,7 @@ import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
 
-const API_URL = 'https://fakestoreapi.com/products';
+const API_URL = 'http://localhost:5000/api/products?category=LimitedCollection';
 
 const Navbar = ({ cartCount, toggleCart }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -230,7 +230,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
 	);
 };
 
-const ProductCard = ({ product, onAddToCart }) => {
+const ProductCard = ({ product }) => {
 	return (
 		<div className="product-card block bg-white overflow-hidden transition-transform duration-300 hover:scale-105 relative">
 			{product.soldOut && (
@@ -252,24 +252,11 @@ const ProductCard = ({ product, onAddToCart }) => {
 						<p className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-900 ml-1 sm:ml-2">₹{product.price.toFixed(2)}</p>
 					</div>
 					<p className="mt-0.5 sm:mt-1 text-[8px] sm:text-xs md:text-sm text-gray-500">{product.color}</p>
-					{!product.soldOut && (
-						<button
-							onClick={(e) => {
-								e.preventDefault();
-								onAddToCart(product);
-							}}
-							className="mt-2 w-full bg-black text-white text-xs sm:text-sm py-1 sm:py-2 rounded hover:bg-gray-800 transition-colors"
-						>
-							Add to Cart
-						</button>
-					)}
 				</div>
 			</Link>
 		</div>
 	);
 };
-
-// Include your existing Navbar component here
 
 const ProductPage = () => {
 	const { id } = useParams();
@@ -308,18 +295,6 @@ const ProductPage = () => {
 		fetchProducts();
 	}, []);
 
-	const addToCart = (product) => {
-		setCart(prevCart => {
-			const existingItem = prevCart.find(item => item.id === product.id);
-			if (existingItem) {
-				return prevCart.map(item =>
-					item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-				);
-			}
-			return [...prevCart, { ...product, quantity: 1 }];
-		});
-	};
-
 	const updateQuantity = (id, newQuantity) => {
 		if (newQuantity < 1) return;
 		setCart(prevCart =>
@@ -352,7 +327,7 @@ const ProductPage = () => {
 			<Navbar cartCount={cartCount} toggleCart={toggleCart} />
 			<div className="w-full px-2 sm:px-4 pt-16 sm:pt-20 md:pt-24 pb-2 sm:pb-4 md:pb-8">
 				<h4 className="text-xl sm:text-2xl md:text-2xl font-bold text-left" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>
-					LIMITED EDITION
+					LIMITED STOCKS
 				</h4>
 			</div>
 			<div className="w-full px-2 sm:px-4">
@@ -368,7 +343,6 @@ const ProductPage = () => {
 							<ProductCard
 								key={product.id}
 								product={product}
-								onAddToCart={addToCart}
 							/>
 						))}
 					</div>
