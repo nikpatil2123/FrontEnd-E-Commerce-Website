@@ -2,36 +2,38 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const OrderManagement = () => {
-	const [orders, setOrders] = useState([
-		{
-			_id: '1',
-			customerName: 'John Doe',
-			email: 'john@example.com',
-			items: [
-				{
-					productId: '1',
-					name: 'Product 1',
-					quantity: 2,
-					price: 1000
-				}
-			],
-			totalAmount: 2000,
-			status: 'pending',
-			createdAt: new Date(),
-			shippingAddress: '123 Street, City, Country',
-			paymentStatus: 'paid'
-		}
-	]);
+	const [orders, setOrders] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [loading, setLoading] = useState(false);
 	const [selectedOrder, setSelectedOrder] = useState(null);
 	const ordersPerPage = 10;
 
+	useEffect(() => {
+		fetchOrders();
+	}, [currentPage]);
+
+	const fetchOrders = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`http://localhost:5000/api/orders?page=${currentPage}&limit=${ordersPerPage}`);
+			setOrders(response.data.orders);
+		} catch (error) {
+			console.error('Error fetching orders:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const updateOrderStatus = async (orderId, newStatus) => {
-		const updatedOrders = orders.map(order =>
-			order._id === orderId ? { ...order, status: newStatus } : order
-		);
-		setOrders(updatedOrders);
+		try {
+			await axios.put(`http://localhost:5000/api/orders/${orderId}`, { status: newStatus });
+			const updatedOrders = orders.map(order =>
+				order._id === orderId ? { ...order, status: newStatus } : order
+			);
+			setOrders(updatedOrders);
+		} catch (error) {
+			console.error('Error updating order status:', error);
+		}
 	};
 
 	const getStatusColor = (status) => {
