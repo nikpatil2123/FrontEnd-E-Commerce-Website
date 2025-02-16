@@ -286,7 +286,35 @@ const ProductPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState('L');
   const [cart, setCart] = useState<Array<{ id: number; name: string; price: number; size: string; quantity: number }>>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+	const [isCartOpen, setIsCartOpen] = useState(false);
+	
+	// Added: Price calculation helper to add extra charges (e.g., shipping and tax)
+	const calculateTotalPrice = (basePrice: number) => {
+		const shipping = 50; // flat shipping charge
+		const tax = basePrice * 0.1; // 10% tax
+		const total = basePrice + shipping + tax;
+		return { basePrice, shipping, tax, total };
+	};
+
+	// Updated: Buy Now handler using calculateTotalPrice
+	const handleBuyNow = () => {
+		if (product) {
+			const priceDetails = calculateTotalPrice(product.price);
+			navigate('/checkout', {
+				state: {
+					items: [{
+						id: product.id,
+						name: product.name,
+						price: product.price,
+						size: selectedSize,
+						quantity: 1
+					}],
+					priceBreakdown: priceDetails
+				}
+			});
+		}
+	};
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -442,17 +470,15 @@ const ProductPage: React.FC = () => {
               </Button>
 						</div>
 						<div>
-						<Link to="/checkout">
+						<Link to="/checkout" state={{ from: 'buyNow' }}>
 						<Button 
-							
 							className="w-full py-6 text-lg bg-black text-white hover:bg-gray-800"
-							onClick={addToCart}
+							onClick={handleBuyNow}
 						>
 							BUY NOW
-							</Button>
-							</Link>
+						</Button>
+						</Link>
 						</div>	
-
             {/* Shipping Info */}
             <div className="text-sm text-gray-600 space-y-1">
               <p>Italy free shipping over ₹200.</p>
@@ -501,8 +527,16 @@ const ProductPage: React.FC = () => {
                 </div>
               </AccordionItem>
             </div>
+            <div>
+              <Link to="/shop" className="text-blue-600 underline">
+                &larr; Back to Shop
+              </Link>
+            </div>
           </div>
         </div>
+        <section className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Related Products</h2>
+        </section>
       </main>
 
       {/* Cart Modal */}

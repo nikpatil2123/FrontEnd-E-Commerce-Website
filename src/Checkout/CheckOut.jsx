@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/blacklogo.png';
 import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
@@ -236,10 +236,27 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
 
 
 const CheckoutPage = () => {
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Debug: log received state
+  console.log("Checkout state:", location.state);
+
+  const stateData = location.state || {};
+  const stateItems = stateData.items || [];
+  const statePrice = stateData.priceBreakdown || null;
+
+  // Use state items if available, else fallback to localStorage
+  const [cart, setCart] = useState(() => (
+    stateItems.length > 0 ? stateItems : (localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [])
+  ));
+  
+  // Use passed price details if available; otherwise calculate from cart
+  const subtotal = statePrice ? statePrice.basePrice : cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = statePrice ? statePrice.shipping : 50;
+  const tax = statePrice ? statePrice.tax : subtotal * 0.18;
+  const total = statePrice ? statePrice.total : subtotal + shipping + tax;
+  
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -254,7 +271,6 @@ const CheckoutPage = () => {
     phone: ''
   });
 
-  const navigate = useNavigate();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
@@ -296,11 +312,6 @@ const CheckoutPage = () => {
       phone: ''
     });
   };
-
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 50;
-  const tax = subtotal * 0.18;
-  const total = subtotal + shipping + tax;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -367,7 +378,14 @@ const CheckoutPage = () => {
               <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
               {cart.map((item) => (
                 <div key={item.id} className="flex items-center space-x-4 mb-4 pb-4 border-b">
-                  <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
+                  {/* Display a fallback image if item.image is absent */}
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
+                  ) : (
+                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded">
+                      <span className="text-xs text-gray-500">No Image</span>
+                    </div>
+                  )}
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>
                     <p className="text-gray-600">Size: {item.size}</p>

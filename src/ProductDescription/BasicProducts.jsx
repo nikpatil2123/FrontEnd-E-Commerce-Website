@@ -7,7 +7,7 @@ import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
 
-const API_URL = 'http://localhost:5000/api/products?category=Basic';
+const API_URL = 'https://fakestoreapi.com/products';
 
 const Navbar = ({ cartCount, toggleCart }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -232,7 +232,7 @@ const CartMenu = ({ cart, updateQuantity, removeFromCart, applyDiscount, checkou
 	);
 };
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onAddToCart }) => {
 	return (
 		<div className="product-card block bg-white overflow-hidden transition-transform duration-300 hover:scale-105 relative">
 			{product.soldOut && (
@@ -254,11 +254,24 @@ const ProductCard = ({ product }) => {
 						<p className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-900 ml-1 sm:ml-2">₹{product.price.toFixed(2)}</p>
 					</div>
 					<p className="mt-0.5 sm:mt-1 text-[8px] sm:text-xs md:text-sm text-gray-500">{product.color}</p>
+					{/* {!product.soldOut && (
+						<button
+							onClick={(e) => {
+								e.preventDefault();
+								onAddToCart(product);
+							}}
+							className="mt-2 w-full bg-black text-white text-xs sm:text-sm py-1 sm:py-2 rounded hover:bg-gray-800 transition-colors"
+						>
+							Add to Cart
+						</button>
+					)} */}
 				</div>
 			</Link>
 		</div>
 	);
 };
+
+// Include your existing Navbar component here
 
 const ProductPage = () => {
 	const { id } = useParams();
@@ -277,12 +290,12 @@ const ProductPage = () => {
 				const data = await response.json();
 
 				const transformedData = data.map(item => ({
-					id: item._id,
-					name: item.name,
+					id: item.id,
+					name: item.title,
 					price: item.price,
-					image: item.images[0],
-					soldOut: item.stock.M === 0, // Example condition for sold out
-					color: item.color || 'Default Color'
+					image: item.image,
+					// soldOut: Math.random() < 0.5,
+					color: ['Wine Red', 'Glacier', 'Mint', 'Almond'][Math.floor(Math.random() * 4)]
 				}));
 
 				setProducts(transformedData);
@@ -296,6 +309,18 @@ const ProductPage = () => {
 
 		fetchProducts();
 	}, []);
+
+	const addToCart = (product) => {
+		setCart(prevCart => {
+			const existingItem = prevCart.find(item => item.id === product.id);
+			if (existingItem) {
+				return prevCart.map(item =>
+					item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+				);
+			}
+			return [...prevCart, { ...product, quantity: 1 }];
+		});
+	};
 
 	const updateQuantity = (id, newQuantity) => {
 		if (newQuantity < 1) return;
@@ -345,6 +370,7 @@ const ProductPage = () => {
 							<ProductCard
 								key={product.id}
 								product={product}
+								onAddToCart={addToCart}
 							/>
 						))}
 					</div>
