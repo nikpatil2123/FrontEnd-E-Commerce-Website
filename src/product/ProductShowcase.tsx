@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Importing images
@@ -281,8 +281,10 @@ const CartMenu: React.FC<{
 const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get product ID from URL
   const navigate = useNavigate();
-  const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const passedProduct = location.state?.product;
+  const [product, setProduct] = useState<any>(passedProduct || null);
+  const [loading, setLoading] = useState(passedProduct ? false : true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState('L');
   const [cart, setCart] = useState<Array<{ id: number; name: string; price: number; size: string; quantity: number }>>([]);
@@ -317,32 +319,33 @@ const ProductPage: React.FC = () => {
 
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-        const data = await response.json();
-        
-        const transformedProduct = {
-          id: data.id,
-          name: data.title,
-          price: data.price,
-          images: [data.image, data.image, data.image], // Add multiple images if needed
-          sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-          description: data.description,
-        };
-        
-        setProduct(transformedProduct);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching product:', error);
-        navigate('/'); // Redirect to home page on error
-      }
-    };
+    if (!passedProduct && id) {
+      const fetchProduct = async () => {
+        try {
+          const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+          const data = await response.json();
+          
+          // Updated: Use the images array directly from the backend
+          const transformedProduct = {
+            id: data.id,
+            name: data.title,
+            price: data.price,
+            images: data.images || [data.image], // <-- Changed to use backend array of images
+            sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+            description: data.description,
+          };
+          
+          setProduct(transformedProduct);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching product:', error);
+          navigate('/');
+        }
+      };
 
-    if (id) {
       fetchProduct();
     }
-  }, [id, navigate]);
+  }, [id, passedProduct, navigate]);
 
   const addToCart = () => {
     if (product) {
@@ -409,6 +412,8 @@ const ProductPage: React.FC = () => {
     );
   }
 
+  const images = product?.images || [];
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar cartCount={cartCount} toggleCart={toggleCart} />
@@ -417,19 +422,27 @@ const ProductPage: React.FC = () => {
           {/* Product Images */}
           <div className="relative">
             <img
-              src={product.images[currentImageIndex]}
+              src={images.length > 0 ? images[currentImageIndex] : '/path/to/default-image.jpg'}
               alt={product.name}
               className="w-full h-auto object-cover"
             />
             <button
-              onClick={() => setCurrentImageIndex(i => (i > 0 ? i - 1 : product.images.length - 1))}
+              onClick={() =>
+                setCurrentImageIndex(i =>
+                  images.length > 0 ? (i > 0 ? i - 1 : images.length - 1) : 0
+                )
+              }
               className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-6 h-6 text-gray-800" />
             </button>
             <button
-              onClick={() => setCurrentImageIndex(i => (i < product.images.length - 1 ? i + 1 : 0))}
+              onClick={() =>
+                setCurrentImageIndex(i =>
+                  images.length > 0 ? (i < images.length - 1 ? i + 1 : 0) : 0
+                )
+              }
               className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
               aria-label="Next image"
             >
@@ -447,7 +460,7 @@ const ProductPage: React.FC = () => {
             {/* Size Selection */}
             <div className="space-y-4">
               <div className="flex gap-2">
-                {product.sizes.map(size => (
+                {(product.sizes || ['XS', 'S', 'M', 'L', 'XL', 'XXL']).map(size => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}

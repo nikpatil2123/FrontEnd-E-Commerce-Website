@@ -19,6 +19,7 @@ import Checkout from './Checkout/CheckOut.jsx';
 import ProductManagement from './admin/ProductManagement.jsx';
 import OrderStatus from './admin/Orderstatus.jsx';
 import HomeFeedManagement from './admin/HomeFeedManagement.jsx';
+import Coupons from './admin/Discount.jsx';
 function App() {
   // Define routes using createBrowserRouter
   const router = createBrowserRouter([
@@ -97,6 +98,10 @@ function App() {
 		{
 			path: "/admin/homefeed",
 			element: <HomeFeedManagement />
+		},
+		{
+			path: "/admin/coupons",
+			element: <Coupons />
 		}
 
 

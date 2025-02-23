@@ -38,6 +38,9 @@ const AdminDashboard = () => {
 					<li>
 						<Link to="/admin/products" className="block text-lg text-gray-700 hover:text-gray-900 transition-colors">Product Management</Link>
 					</li>
+					<li>
+						<Link to="/admin/coupons" className="block text-lg text-gray-700 hover:text-gray-900 transition-colors">Discount Management</Link>
+					</li>
 				</ul>
 			</div>
 

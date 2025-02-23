@@ -10,6 +10,7 @@ const ProductManagement = () => {
 		description: '',
 		category: '',
 		subCategory: '',
+		discount: '', // <-- new discount field
 		stock: {
 			XS: 0,
 			S: 0,
@@ -19,7 +20,6 @@ const ProductManagement = () => {
 			XXL: 0
 		},
 		images: [],
-		discount: 0,
 		isLimited: false,
 		limitedQuantity: null
 	});
@@ -31,23 +31,23 @@ const ProductManagement = () => {
 	}, [currentPage]);
 
 	const fetchProducts = async () => {
-		const response = await axios.get(`http://localhost:5000/api/products?page=${currentPage}&limit=${productsPerPage}`);
+		const response = await axios.get(`http://localhost:5000/api/admin/products?page=${currentPage}&limit=${productsPerPage}`);
 		setProducts(response.data);
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (editingProduct) {
-			await axios.put(`http://localhost:5000/api/products/${editingProduct._id}`, newProduct);
+			await axios.put(`http://localhost:5000/api/admin/products/${editingProduct._id}`, newProduct);
 		} else {
-			await axios.post('http://localhost:5000/api/products', newProduct);
+			await axios.post('http://localhost:5000/api/admin/products', newProduct);
 		}
 		fetchProducts();
 		resetForm();
 	};
 
 	const handleDelete = async (id) => {
-		await axios.delete(`http://localhost:5000/api/products/${id}`);
+		await axios.delete(`http://localhost:5000/api/admin/products/${id}`);
 		fetchProducts();
 	};
 
@@ -58,6 +58,7 @@ const ProductManagement = () => {
 			description: '',
 			category: '',
 			subCategory: '',
+			discount: '', // <-- new discount field
 			stock: {
 				XS: 0,
 				S: 0,
@@ -67,7 +68,6 @@ const ProductManagement = () => {
 				XXL: 0
 			},
 			images: [],
-			discount: 0,
 			isLimited: false,
 			limitedQuantity: null
 		});
@@ -99,7 +99,7 @@ const ProductManagement = () => {
 					<h2 className="text-2xl font-bold mb-6">
 						{editingProduct ? 'Edit Product' : 'Add New Product'}
 					</h2>
-					
+
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
@@ -107,18 +107,18 @@ const ProductManagement = () => {
 								<input
 									type="text"
 									value={newProduct.name}
-									onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+									onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
 									className="w-full p-2 border rounded-lg"
 									required
 								/>
 							</div>
-							
+
 							<div>
 								<label className="block text-sm font-medium mb-1">Price</label>
 								<input
 									type="number"
 									value={newProduct.price}
-									onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+									onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
 									className="w-full p-2 border rounded-lg"
 									required
 								/>
@@ -128,14 +128,14 @@ const ProductManagement = () => {
 								<label className="block text-sm font-medium mb-1">Category</label>
 								<select
 									value={newProduct.category}
-									onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+									onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
 									className="w-full p-2 border rounded-lg"
 									required
 								>
 									<option value="">Select Category</option>
-									<option value="clothing">Limited Edition</option>
-									<option value="accessories">Limited Stock</option>
-									<option value="footwear">Basic</option>
+									<option value="Limited_Edition">Limited Edition</option>
+									<option value="Limited_stocks">Limited Stock</option>
+									<option value="Basics">Basic</option>
 								</select>
 							</div>
 
@@ -156,24 +156,25 @@ const ProductManagement = () => {
 									))}
 								</div>
 							</div>
+						</div>
 
-							<div>
-								<label className="block text-sm font-medium mb-1">Discount (%)</label>
-								<input
-									type="number"
-									value={newProduct.discount}
-									onChange={(e) => setNewProduct({...newProduct, discount: e.target.value})}
-									className="w-full p-2 border rounded-lg"
-									required
-								/>
-							</div>
+						{/* Discount Section */}
+						<div>
+							<label className="block text-sm font-medium mb-1">Discount</label>
+							<input
+								type="text"
+								placeholder="Enter discount (e.g., 10% off, or 100)"
+								value={newProduct.discount}
+								onChange={(e) => setNewProduct({ ...newProduct, discount: e.target.value })}
+								className="w-full p-2 border rounded-lg"
+							/>
 						</div>
 
 						<div>
 							<label className="block text-sm font-medium mb-1">Description</label>
 							<textarea
 								value={newProduct.description}
-								onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+								onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
 								className="w-full p-2 border rounded-lg"
 								rows={4}
 								required
@@ -229,7 +230,6 @@ const ProductManagement = () => {
 										<th className="text-left p-2">Category</th>
 										<th className="text-left p-2">Price</th>
 										<th className="text-left p-2">Stock</th>
-										<th className="text-left p-2">Discount</th>
 										<th className="text-left p-2">Actions</th>
 									</tr>
 								</thead>
@@ -254,7 +254,6 @@ const ProductManagement = () => {
 													<div key={size}>{size}: {quantity}</div>
 												))}
 											</td>
-											<td className="p-2">{product.discount}%</td>
 											<td className="p-2">
 												<div className="flex gap-2">
 													<button

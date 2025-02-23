@@ -6,9 +6,7 @@ import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
-
-const API_URL = 'https://fakestoreapi.com/products';
-
+const API_URL = "http://localhost:5000/pages/limitedStocks?category=Limited_stocks";
 const Navbar = ({ cartCount, toggleCart }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -16,7 +14,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 	const searchInputRef = useRef(null);
 	const [isMobile, setIsMobile] = useState(false);
 
-	const toggleMenu = () => {
+	const toggleMenu = () => { 	
 		setIsMenuOpen((prevState) => !prevState);
 		setIsSearchOpen(false);
 	};
@@ -238,10 +236,10 @@ const ProductCard = ({ product, onAddToCart }) => {
 					Sold Out
 				</span>
 			)}
-			<Link to={`/product/${product.id}`} className="block">
+			<Link to={`/product/${product._id || product.id}`} state={{ product }} className="block">
 				<div className="aspect-[3/4] relative overflow-hidden">
 					<img
-						src={product.image}
+						src={product.images && product.images.length > 0 ? product.images[0] : ''}
 						alt={product.name}
 						className="w-full h-full object-cover"
 					/>
@@ -287,12 +285,22 @@ const ProductPage = () => {
 				if (!response.ok) throw new Error('Network response was not ok');
 				const data = await response.json();
 
-				const transformedData = data.map(item => ({
+				const productsData = Array.isArray(data)
+					? data
+					: data.products
+						? data.products
+						: [];
+
+				if (!Array.isArray(productsData)) {
+					throw new Error("Unexpected data format: products data is not an array");
+				}
+				console.log('Fetched products:', productsData);	
+				// Updated transformation: use item.name if available, otherwise fallback to item.title
+				const transformedData = productsData.map(item => ({
 					id: item.id,
-					name: item.title,
+					name: item.name || item.title,
 					price: item.price,
-					image: item.image,
-					// soldOut: Math.random() < 0.5,
+					images: item.images || [item.image],
 					color: ['Wine Red', 'Glacier', 'Mint', 'Almond'][Math.floor(Math.random() * 4)]
 				}));
 

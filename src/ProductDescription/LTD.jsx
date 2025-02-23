@@ -6,8 +6,7 @@ import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
-
-const API_URL = 'https://fakestoreapi.com/products';
+const API_URL = "http://localhost:5000/pages/limitedEdition?category=Limited_Edition";
 
 const Navbar = ({ cartCount, toggleCart }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -238,10 +237,10 @@ const ProductCard = ({ product, onAddToCart }) => {
 					Sold Out
 				</span>
 			)}
-			<Link to={`/product/${product.id}`} className="block">
+			<Link to={`/product/${product._id || product.id}`} state={{ product }} className="block">
 				<div className="aspect-[3/4] relative overflow-hidden">
 					<img
-						src={product.image}
+						src={product.images && product.images.length > 0 ? product.images[0] : ''}
 						alt={product.name}
 						className="w-full h-full object-cover"
 					/>
@@ -287,12 +286,22 @@ const ProductPage = () => {
 				if (!response.ok) throw new Error('Network response was not ok');
 				const data = await response.json();
 
-				const transformedData = data.map(item => ({
+				const productsData = Array.isArray(data)
+					? data
+					: data.products
+						? data.products
+						: [];
+
+				if (!Array.isArray(productsData)) {
+					throw new Error("Unexpected data format: products data is not an array");
+				}
+
+				// Updated transformation: use item.name if available, otherwise fallback to item.title
+				const transformedData = productsData.map(item => ({
 					id: item.id,
-					name: item.title,
+					name: item.name || item.title,
 					price: item.price,
-					image: item.image,
-					// soldOut: Math.random() < 0.5,
+					images: item.images || [item.image],
 					color: ['Wine Red', 'Glacier', 'Mint', 'Almond'][Math.floor(Math.random() * 4)]
 				}));
 
@@ -352,7 +361,7 @@ const ProductPage = () => {
 			<Navbar cartCount={cartCount} toggleCart={toggleCart} />
 			<div className="w-full px-2 sm:px-4 pt-16 sm:pt-20 md:pt-24 pb-2 sm:pb-4 md:pb-8">
 				<h4 className="text-xl sm:text-2xl md:text-2xl font-bold text-left" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>
-		LIMITED EDITION
+					LIMITED EDITION
 				</h4>
 			</div>
 			<div className="w-full px-2 sm:px-4">
