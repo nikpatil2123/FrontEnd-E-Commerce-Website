@@ -12,8 +12,18 @@ const Navbar = ({ cartCount, toggleCart }) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
-	const searchInputRef = useRef(null);
 	const [isMobile, setIsMobile] = useState(false);
+	const searchInputRef = useRef(null);
+
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
 
 	const toggleMenu = () => {
 		setIsMenuOpen((prevState) => !prevState);
@@ -30,29 +40,42 @@ const Navbar = ({ cartCount, toggleCart }) => {
 
 	useEffect(() => {
 		const closeMenu = (e) => {
-			if (!e.target.closest("#side-menu") && e.target.id !== "menu-icon") {
+			if (
+				!e.target.closest("#side-menu") &&
+				!e.target.closest("#search-input") &&
+				e.target.id !== "menu-icon" &&
+				e.target.id !== "search-icon"
+			) {
 				setIsMenuOpen(false);
+				setIsSearchOpen(false);
 			}
 		};
 		window.addEventListener("click", closeMenu);
 		return () => window.removeEventListener("click", closeMenu);
 	}, []);
 
+	useEffect(() => {
+		if (isSearchOpen) {
+			searchInputRef.current?.focus();
+		}
+	}, [isSearchOpen]);
+
 	return (
-		<nav className="flex items-center justify-between h-14 sm:h-16 md:h-20 bg-white fixed top-0 left-0 right-0 z-50 px-2 sm:px-4 md:px-8 shadow-md">
-			<div className="flex items-center space-x-2 md:space-x-4 text-black">
+		<nav className="flex items-center justify-between h-16 bg-transparent fixed top-0 left-0 right-0 z-20 px-4 sm:px-8 py-8 sm:py-12 pt-12">
+			{/* Left: Menu Icon and Search */}
+			<div className="flex items-center space-x-4 text-black">
 				<img
 					src={menu}
 					alt=""
-					className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 p-1 md:p-2 hover:text-gray-400"
+					className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
 					id="menu-icon"
 					onClick={toggleMenu}
 				/>
 				{isSearchOpen && (
-					<div className="relative flex-1 w-24 sm:w-32 md:w-64" id="search-input">
+					<div className="relative flex-1" id="search-input">
 						<input
 							type="text"
-							className="bg-gray-800 text-white px-2 md:px-4 py-1 md:py-2 rounded-full focus:outline-none w-full text-xs sm:text-sm md:text-base"
+							className="bg-gray-800 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full focus:outline-none w-full text-sm sm:text-base"
 							placeholder="Search"
 							value={searchQuery}
 							onChange={handleSearch}
@@ -64,44 +87,47 @@ const Navbar = ({ cartCount, toggleCart }) => {
 					<img
 						src={search}
 						alt="search icon"
-						className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 p-1 md:p-2 hover:text-gray-400"
+						className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
 						id="search-icon"
 						onClick={toggleSearch}
 					/>
 				)}
 			</div>
 
+			{/* Center: Logo */}
 			<div className="flex-1 text-center">
 				<a href="/">
 					<div className="flex justify-center items-center">
-						<img src={logo} alt="Logo" className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12" />
+						<img src={logo} alt="Logo" className="h-16 w-16" />
 					</div>
 				</a>
 			</div>
 
-			<div className="flex items-center space-x-2 md:space-x-4 text-black">
+			{/* Right: User and Cart */}
+			<div className="flex items-center space-x-4 text-black">
 				<Link to="/login">
 					<img
 						src={user}
 						alt="User Icon"
-						className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 p-1 md:p-2 hover:text-gray-400"
+						className="text-xl p-2 hover:text-gray-400 w-10 h-10"
 					/>
 				</Link>
 				<div className="relative">
 					<img
 						src={shopping}
 						alt="Shopping Cart Icon"
-						className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 p-1 md:p-2 hover:text-gray-400"
+						className="text-xl p-2 hover:text-gray-400 w-10 h-10 cursor-pointer"
 						onClick={toggleCart}
 					/>
 					{cartCount > 0 && (
-						<span className="absolute -top-1 -right-1 md:-top-2 md:-right-2 bg-red-500 text-white rounded-full w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 flex items-center justify-center text-[8px] sm:text-xs">
+						<span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
 							{cartCount}
 						</span>
 					)}
 				</div>
 			</div>
 
+			{/* Side Menu */}
 			<div
 				className={`fixed top-0 left-0 h-screen bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
 					} ${isMobile ? "w-[200px]" : "w-[410px]"
@@ -120,6 +146,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 						</button>
 					</div>
 
+					{/* Main Menu Links */}
 					<div className="flex-1 space-y-4 sm:space-y-6 text-base sm:text-lg font-regular">
 						<a href="/" className="block hover:text-gray-400 py-2">HOME</a>
 						<Link to="/shop" className="block hover:text-gray-400 py-2">SHOP ALL</Link>
@@ -128,6 +155,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 						<Link to="/Limited/:id" className="block hover:text-gray-400 py-2">LIMITED STOCKS</Link>
 					</div>
 
+					{/* Footer Links */}
 					<div className="space-y-3 sm:space-y-5 text-xs sm:text-sm text-gray-400 mt-4">
 						<Link to="/CustomerService" className="block hover:text-gray-300 py-1">Customer Service</Link>
 						<Link to="/Orders" className="block hover:text-gray-300 py-1">Order Management</Link>
@@ -137,6 +165,7 @@ const Navbar = ({ cartCount, toggleCart }) => {
 						<Link to="/Cookies" className="block hover:text-gray-300 py-1">Cookies</Link>
 						<Link to="/T&C" className="block hover:text-gray-300 py-1">Terms & Condition</Link>
 
+						{/* Social Icons */}
 						<div className="flex space-x-4 mt-6 pt-4 border-t border-gray-700">
 							<a href="https://www.instagram.com/tristanaindia/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-300">
 								<i className="fab fa-instagram text-lg sm:text-xl"></i>

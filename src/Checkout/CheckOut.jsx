@@ -246,16 +246,32 @@ const CheckoutPage = () => {
   const stateItems = stateData.items || [];
   const statePrice = stateData.priceBreakdown || null;
 
-  // Use state items if available, else fallback to localStorage
-  const [cart, setCart] = useState(() => (
-    stateItems.length > 0 ? stateItems : (localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [])
-  ));
+  const locationData = location.state || {};
+  const productFromState = locationData.product;
+  const priceBreakdown = locationData.priceBreakdown;
+  const selectedSizeFromState = locationData.selectedSize;
+
+// Update cart initialization to use these values:
+  const [cart, setCart] = useState(() =>
+    productFromState 
+      ? [{
+          id: productFromState.id,
+          name: productFromState.name,
+          price: productFromState.price,
+          size: selectedSizeFromState || (productFromState.sizes ? productFromState.sizes[0] : 'M'),
+          quantity: 1
+        }]
+      : (stateItems.length > 0 
+          ? stateItems 
+          : (localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [])
+        )
+  );
   
-  // Use passed price details if available; otherwise calculate from cart
-  const subtotal = statePrice ? statePrice.basePrice : cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = statePrice ? statePrice.shipping : 50;
-  const tax = statePrice ? statePrice.tax : subtotal * 0.18;
-  const total = statePrice ? statePrice.total : subtotal + shipping + tax;
+  const subtotal = priceBreakdown ? priceBreakdown.basePrice : cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Override shipping to 0 regardless of priceBreakdown
+  const shipping = 0;
+  // Update total calculation to always be subtotal + shipping (ignoring priceBreakdown.total)
+  const total = subtotal + shipping;
   
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -270,6 +286,7 @@ const CheckoutPage = () => {
     pincode: '',
     phone: ''
   });
+  const [couponCode, setCouponCode] = useState(''); // <-- New state for coupon code
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -416,16 +433,32 @@ const CheckoutPage = () => {
                   <span>Shipping</span>
                   <span>₹{shipping.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Tax</span>
-                  <span>₹{tax.toFixed(2)}</span>
-                </div>
+                {/* Remove tax display block */}
                 <div className="flex justify-between text-lg font-semibold pt-2 border-t">
                   <span>Total</span>
                   <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
-
+              {/* New: Apply Coupon Field */}
+              <div className="mt-4">
+                <label className="block text-sm font-medium mb-1">Apply Coupon</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    placeholder="Enter coupon code"
+                    className="w-full p-2 border rounded"
+                  />
+                  <button
+                    onClick={() => alert(`Coupon applied: ${couponCode}`)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+              {/* End New Field */}
               <button 
                 onClick={() => {/* Handle place order */}}
                 className="w-full mt-6 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition-colors"

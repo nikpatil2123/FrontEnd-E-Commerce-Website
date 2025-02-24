@@ -304,13 +304,8 @@ const ProductPage: React.FC = () => {
 			const priceDetails = calculateTotalPrice(product.price);
 			navigate('/checkout', {
 				state: {
-					items: [{
-						id: product.id,
-						name: product.name,
-						price: product.price,
-						size: selectedSize,
-						quantity: 1
-					}],
+					product,                // pass full product details
+					selectedSize,           // pass the user-selected size
 					priceBreakdown: priceDetails
 				}
 			});
@@ -483,15 +478,13 @@ const ProductPage: React.FC = () => {
               </Button>
 						</div>
 						<div>
-						<Link to="/checkout" state={{ from: 'buyNow' }}>
 						<Button 
 							className="w-full py-6 text-lg bg-black text-white hover:bg-gray-800"
 							onClick={handleBuyNow}
 						>
 							BUY NOW
 						</Button>
-						</Link>
-						</div>	
+							</div>	
             {/* Shipping Info */}
             <div className="text-sm text-gray-600 space-y-1">
               <p>Italy free shipping over ₹200.</p>
