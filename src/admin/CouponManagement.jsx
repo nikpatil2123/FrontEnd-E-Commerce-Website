@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const CouponManagement = () => {
   const [coupons, setCoupons] = useState([]);
-  const [newCoupon, setNewCoupon] = useState({ code: '', remaining: 1, enabled: false });
+  const [newCoupon, setNewCoupon] = useState({ code: '', remaining: 1, enabled: false, orderCondition: '' });
   const [editingCoupon, setEditingCoupon] = useState(null);
 
   const fetchCoupons = async () => {
@@ -21,6 +21,8 @@ const CouponManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Debug: Log newCoupon to ensure maxApplicableAmount is set correctly
+    console.log('New Coupon Object:', newCoupon); // <-- add this log
     try {
       if (editingCoupon) {
         await axios.put(`http://localhost:5000/api/admin/coupons/${editingCoupon._id}`, newCoupon);
@@ -44,7 +46,7 @@ const CouponManagement = () => {
   };
 
   const resetForm = () => {
-    setNewCoupon({ code: '', remaining: 1, enabled: false });
+    setNewCoupon({ code: '', remaining: 1, enabled: false, orderCondition: '' });
     setEditingCoupon(null);
   };
 
@@ -76,6 +78,20 @@ const CouponManagement = () => {
               min={1}
               className="w-full border p-2 rounded"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Order Condition (discount applies only if order total ≤ this value)
+            </label>
+            <input
+              type="number"
+              value={newCoupon.orderCondition}
+              onChange={(e) =>
+                setNewCoupon({ ...newCoupon, orderCondition: e.target.value })
+              }
+              placeholder="e.g., 999"
+              className="w-full border p-2 rounded"
             />
           </div>
           <div className="flex items-center">
@@ -113,6 +129,7 @@ const CouponManagement = () => {
               <tr className="border-b">
                 <th className="px-4 py-2 text-left">Coupon Code</th>
                 <th className="px-4 py-2 text-left">Remaining</th>
+                <th className="px-4 py-2 text-left">Condition</th>
                 <th className="px-4 py-2 text-left">Enabled</th>
                 <th className="px-4 py-2">Actions</th>
               </tr>
@@ -122,6 +139,7 @@ const CouponManagement = () => {
                 <tr key={coupon._id} className="border-b">
                   <td className="px-4 py-2">{coupon.code}</td>
                   <td className="px-4 py-2">{coupon.remaining}</td>
+                  <td className="px-4 py-2">{coupon.orderCondition || '-'}</td>
                   <td className="px-4 py-2">{coupon.enabled ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-2 flex gap-2 justify-center">
                     <button
@@ -131,6 +149,7 @@ const CouponManagement = () => {
                           code: coupon.code,
                           remaining: coupon.remaining,
                           enabled: coupon.enabled,
+                          orderCondition: coupon.orderCondition || ''
                         });
                       }}
                       className="bg-yellow-500 text-white px-2 py-1 rounded"
