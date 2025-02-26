@@ -8,6 +8,8 @@ import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
+import Navbar from '../components/Navbar';
+
 
 // Button Component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }>(
@@ -50,155 +52,6 @@ const AccordionItem: React.FC<{ title: string; children: React.ReactNode }> = ({
   );
 };
 
-// Navbar Component
-const Navbar: React.FC<{ cartCount: number; toggleCart: () => void }> = ({ cartCount, toggleCart }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  const toggleMenu = () => {
-    setIsMenuOpen((prevState) => !prevState);
-    setIsSearchOpen(false);
-  };
-
-  const toggleSearch = () => {
-    setIsSearchOpen((prevState) => !prevState);
-  };
-
-  useEffect(() => {
-    const closeMenu = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest("#side-menu") && (e.target as HTMLElement).id !== "menu-icon") {
-        setIsMenuOpen(false);
-      }
-    };
-    window.addEventListener("click", closeMenu);
-    return () => window.removeEventListener("click", closeMenu);
-  }, []);
-
-  return (
-    <nav className="flex items-center justify-between h-20 bg-white fixed top-0 left-0 right-0 z-50 px-8">
-      {/* Left: Menu Icon */}
-      <div className="flex items-center space-x-4 text-black">
-        <img
-          src={menu}
-          alt=""
-          className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-          id="menu-icon"
-          onClick={toggleMenu}
-        />
-        {isSearchOpen && (
-          <div className="relative flex-1" id="search-input">
-            <input
-              type="text"
-              className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none w-full"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              ref={searchInputRef}
-            />
-          </div>
-        )}
-        {!isSearchOpen && (
-          <img
-            src={search}
-            alt="search icon"
-            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-            id="search-icon"
-            onClick={toggleSearch}
-          />
-        )}
-      </div>
-
-      {/* Center: Logo */}
-      <div className="absolute left-1/2 transform -translate-x-1/2">
-        <a href="/">
-          <div className="flex justify-center items-center">
-            <img src={logo} alt="Logo" className="h-16 w-16" />
-          </div>
-        </a>
-      </div>
-
-      {/* Right: User and Cart */}
-      <div className="flex items-center space-x-4 text-black">
-        <Link to="/login">
-          <img
-            src={user}
-            alt="User Icon"
-            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10"
-          />
-        </Link>
-        <div className="relative">
-          <img
-            src={shopping}
-            alt="Shopping Cart Icon"
-            className="text-xl p-2 hover:opacity-70 transition-opacity w-10 h-10 cursor-pointer"
-            onClick={toggleCart}
-          />
-          {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              {cartCount}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Side Menu */}
-      <div
-        className={`fixed top-0 left-0 h-screen w-[410px] bg-black/90 text-white z-30 transform transition-transform duration-500 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-        id="side-menu"
-      >
-        <div className="p-6 flex flex-col h-full">
-          <div className="flex-1 space-y-6 text-lg font-regular">
-            <a href="/" className="flex items-center justify-between hover:text-gray-400">
-              <span>HOME</span>
-            </a>
-            <Link to="/shop" className="flex items-center justify-between hover:text-gray-400">
-              <span>SHOP ALL</span>
-            </Link>
-            <Link to="/LTD/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>LTD. ED.</span>
-            </Link>
-            <Link to="/Basic/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>BASIC</span>
-            </Link>
-            <Link to="/Limited/:id" className="flex items-center justify-between hover:text-gray-400">
-              <span>LIMITED STOCKS</span>
-            </Link>
-          </div>
-
-          <div className="space-y-5 text-sm text-gray-400 mt-auto">
-            <Link to="/CustomerService" className="block hover:text-gray-300">Customer Service</Link>
-            <Link to="/Orders" className="block hover:text-gray-300">Order Management</Link>
-            <Link to="/ReturnPolicy" className="block hover:text-gray-300">Return Policy</Link>
-            <Link to="/Privacy" className="block hover:text-gray-300">Privacy</Link>
-            <Link to="/FAQ" className="block hover:text-gray-300">FAQ</Link>
-            <Link to="/Cookies" className="block hover:text-gray-300">Cookies</Link>
-            <Link to="/T&C" className="block hover:text-gray-300">Terms & Condition</Link>
-
-            <div className="flex space-x-4 mt-4">
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-instagram text-gray-400 hover:text-gray-300 text-lg"></i>
-              </a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
-                <i className="fab fa-linkedin-in text-gray-400 hover:text-gray-300 text-lg"></i>
-              </a>
-              <a href="tel:+123456789" target="_blank" rel="noopener noreferrer">
-                <i className="fas fa-phone-alt text-gray-400 hover:text-gray-300 text-lg"></i>
-              </a>
-              <a href="mailto:someone@example.com" target="_blank" rel="noopener noreferrer">
-                <i className="fas fa-envelope text-gray-400 hover:text-gray-300 text-lg"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
 // Cart Menu Component
 const CartMenu: React.FC<{
   cart: Array<{ id: number; name: string; price: number; size: string; quantity: number }>;
@@ -223,8 +76,11 @@ const CartMenu: React.FC<{
         {cart.length === 0 ? (
           <p className="text-gray-500 text-center">Your cart is empty</p>
         ) : (
-          cart.map((item) => (
-            <div key={item.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
+          cart.map((item, index) => (
+            <div 
+              key={`cart-item-${item.id}-${item.size || ''}-${index}`} 
+              className="mb-6 pb-6 border-b border-gray-200 last:border-b-0"
+            >
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-lg">{item.name}</h3>
