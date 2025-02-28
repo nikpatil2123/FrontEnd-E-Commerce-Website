@@ -6,7 +6,7 @@ import shopping from "../assets/CART.png";
 import user from "../assets/USER.png";
 import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
-import Navbar from '../Components/Navbar';
+import Navbar from '../components/Navbar';
 import useCart, { CartMenu } from '../Cart/useCart';
 
 // Use environment variable for API URL

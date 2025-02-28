@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar';
+import Navbar from '../components/Navbar';
 import useCart, { CartMenu } from '../Cart/useCart';
 
 // Use environment variable for API URL
