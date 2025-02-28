@@ -28,16 +28,16 @@ Follow the steps below to set up and run the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-
+git clone https://github.com/nikpatil2123/FrontEnd-E-Commerce-Website.git
+```
 ##2. Navigate to the Project Directory
 ```bash
 cd-repo-name
-
+```
 ##3.Install Dependencies
 ```bash
 npm install
-
+```
 ##4.Run the Application
 ```bash
 npm run dev
