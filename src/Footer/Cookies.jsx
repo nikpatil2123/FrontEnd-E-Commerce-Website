@@ -34,14 +34,14 @@ const CookiesPage = () => {
             className="object-cover w-full h-full"
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <h2 className="text-7xl font-bold text-white">TRISTANA</h2>
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white helvetica-style">TRISTANA</h2>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <main className="max-w-3xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-8">COOKIE POLICY</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 helvetica-style">COOKIE POLICY</h2>
         <div className="space-y-6">
           <p className="text-gray-600">Last updated: March 15, 2023</p>
 

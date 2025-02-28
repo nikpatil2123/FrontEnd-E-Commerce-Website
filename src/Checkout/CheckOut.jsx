@@ -3,6 +3,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import useCart, { CartMenu } from '../Cart/useCart';
 
+// CSS custom style for Helvetica Neue
+const helveticaStyle = {
+  fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+};
+
 const CheckoutPage = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -77,7 +82,7 @@ const CheckoutPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-gray-50" style={helveticaStyle}>
 			<Navbar cartCount={cartCount} toggleCart={toggleCart} />
 
 			<main className="pt-20 pb-12">
@@ -217,7 +222,7 @@ const CheckoutPage = () => {
 			{/* Address Form Modal */}
 			{showAddressForm && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-					<div className="bg-white p-6 rounded-lg w-full max-w-md">
+					<div className="bg-white p-6 rounded-lg w-full max-w-md" style={helveticaStyle}>
 						<div className="flex justify-between items-center mb-6">
 							<h3 className="text-xl font-semibold">Add New Address</h3>
 							<button
@@ -326,14 +331,16 @@ const CheckoutPage = () => {
 			{/* Cart Modal */}
 			{isCartOpen && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 z-30">
-					<CartMenu
-						cart={cart}
-						updateQuantity={updateQuantity}
-						removeFromCart={removeFromCart}
-						applyDiscount={applyDiscount}
-						checkout={checkout}
-						closeCart={toggleCart}
-					/>
+					<div style={helveticaStyle}>
+						<CartMenu
+							cart={cart}
+							updateQuantity={updateQuantity}
+							removeFromCart={removeFromCart}
+							applyDiscount={applyDiscount}
+							checkout={checkout}
+							closeCart={toggleCart}
+						/>
+					</div>
 				</div>
 			)}
 		</div>

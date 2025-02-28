@@ -10,6 +10,8 @@ import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
 import Navbar from '../components/Navbar';
 
+// API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://fakestoreapi.com';
 
 // Button Component
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }>(
@@ -173,7 +175,8 @@ const ProductPage: React.FC = () => {
     if (!passedProduct && id) {
       const fetchProduct = async () => {
         try {
-          const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+          // Use environment variable for API URL
+          const response = await fetch(`${API_BASE_URL}/products/${id}`);
           const data = await response.json();
           
           // Updated: Use the images array directly from the backend
@@ -304,7 +307,7 @@ const ProductPage: React.FC = () => {
           {/* Product Details */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-medium">{product.name}</h1>
+              <h1 className="text-2xl font-medium helvetica-style">{product.name}</h1>
               <p className="text-xl mt-2">₹{product.price.toFixed(2)}</p>
             </div>
 
@@ -397,7 +400,7 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
         <section className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Related Products</h2>
+          <h2 className="text-2xl font-bold mb-4 helvetica-style">Related Products</h2>
         </section>
       </main>
 

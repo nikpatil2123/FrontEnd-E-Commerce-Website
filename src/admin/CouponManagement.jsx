@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
 const CouponManagement = () => {
   const [coupons, setCoupons] = useState([]);
@@ -8,7 +9,7 @@ const CouponManagement = () => {
 
   const fetchCoupons = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/coupons');
+      const response = await axios.get(`${API_BASE_URL}/api/admin/coupons`);
       setCoupons(response.data);
     } catch (error) {
       console.error('Error fetching coupons:', error);
@@ -25,9 +26,9 @@ const CouponManagement = () => {
     console.log('New Coupon Object:', newCoupon); // <-- add this log
     try {
       if (editingCoupon) {
-        await axios.put(`http://localhost:5000/api/admin/coupons/${editingCoupon._id}`, newCoupon);
+        await axios.put(`${API_BASE_URL}/api/admin/coupons/${editingCoupon._id}`, newCoupon);
       } else {
-        await axios.post('http://localhost:5000/api/admin/coupons', newCoupon);
+        await axios.post(`${API_BASE_URL}/api/admin/coupons`, newCoupon);
       }
       fetchCoupons();
       resetForm();
@@ -38,7 +39,7 @@ const CouponManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/coupons/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/admin/coupons/${id}`);
       fetchCoupons();
     } catch (error) {
       console.error('Error deleting coupon:', error);

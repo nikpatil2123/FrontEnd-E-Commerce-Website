@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/env';
 
 const AdminDashboard = () => {
 	const [stats, setStats] = useState({
@@ -16,7 +17,7 @@ const AdminDashboard = () => {
 
 	const fetchStats = async () => {
 		try {
-			const response = await axios.get('http://localhost:5000/api/stats');
+			const response = await axios.get(`${API_BASE_URL}/api/stats`);
 			setStats(response.data);
 		} catch (error) {
 			console.error('Error fetching stats:', error);

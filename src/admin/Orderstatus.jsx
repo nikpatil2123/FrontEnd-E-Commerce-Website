@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
 const OrderManagement = () => {
 	const [orders, setOrders] = useState([]);
@@ -15,7 +16,7 @@ const OrderManagement = () => {
 	const fetchOrders = async () => {
 		setLoading(true);
 		try {
-			const response = await axios.get(`http://localhost:5000/api/orders?page=${currentPage}&limit=${ordersPerPage}`);
+			const response = await axios.get(`${API_BASE_URL}/api/orders?page=${currentPage}&limit=${ordersPerPage}`);
 			setOrders(response.data.orders);
 		} catch (error) {
 			console.error('Error fetching orders:', error);
@@ -26,7 +27,7 @@ const OrderManagement = () => {
 
 	const updateOrderStatus = async (orderId, newStatus) => {
 		try {
-			await axios.put(`http://localhost:5000/api/orders/${orderId}`, { status: newStatus });
+			await axios.put(`${API_BASE_URL}/api/orders/${orderId}`, { status: newStatus });
 			const updatedOrders = orders.map(order =>
 				order._id === orderId ? { ...order, status: newStatus } : order
 			);

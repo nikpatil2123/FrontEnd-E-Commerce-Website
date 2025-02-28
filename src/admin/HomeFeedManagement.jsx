@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
 const HomeFeedManagement = () => {
 	const [mainBanner, setMainBanner] = useState({
@@ -15,7 +16,7 @@ const HomeFeedManagement = () => {
 		// Fetch the current banner from the server
 		const fetchBanner = async () => {
 			try {
-				const response = await axios.get('http://localhost:5000/api/banner');
+				const response = await axios.get(`${API_BASE_URL}/api/banner`);
 				setMainBanner(response.data);
 			} catch (error) {
 				console.error('Error fetching banner:', error);
@@ -50,7 +51,7 @@ const HomeFeedManagement = () => {
 			formData.append('title', mainBanner.title);
 			formData.append('active', mainBanner.active);
 
-			const response = await axios.post('http://localhost:5000/api/banner/update', formData, {
+			const response = await axios.post(`${API_BASE_URL}/api/banner/update`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}

@@ -8,7 +8,9 @@ import search from "../assets/SEARCH.png";
 import menu from "../assets/MENU.png";
 import Navbar from '../Components/Navbar';
 import useCart, { CartMenu } from '../Cart/useCart';
-const API_URL = "http://localhost:5000/pages/basics?category=Basics";
+
+// Use environment variable for API URL
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/pages/basics?category=Basics`;
 
 const ProductCard = ({ product, onAddToCart }) => {
 	return (
@@ -115,7 +117,7 @@ const ProductPage = () => {
 			<Navbar cartCount={cartCount} toggleCart={toggleCart} />
 			{/* Increase top padding to offset fixed Navbar */}
 			<div className="w-full px-2 sm:px-4 pt-28 pb-2 sm:pb-4 md:pb-8">
-				<h4 className="text-xl sm:text-2xl md:text-2xl font-bold text-left" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>
+				<h4 className="text-xl sm:text-2xl md:text-2xl font-bold text-left helvetica-style">
 					BASIC
 				</h4>
 			</div>

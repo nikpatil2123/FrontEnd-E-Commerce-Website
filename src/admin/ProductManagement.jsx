@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
 const ProductManagement = () => {
 	const [products, setProducts] = useState([]);
@@ -31,23 +32,23 @@ const ProductManagement = () => {
 	}, [currentPage]);
 
 	const fetchProducts = async () => {
-		const response = await axios.get(`http://localhost:5000/api/admin/products?page=${currentPage}&limit=${productsPerPage}`);
+		const response = await axios.get(`${API_BASE_URL}/api/admin/products?page=${currentPage}&limit=${productsPerPage}`);
 		setProducts(response.data);
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (editingProduct) {
-			await axios.put(`http://localhost:5000/api/admin/products/${editingProduct._id}`, newProduct);
+			await axios.put(`${API_BASE_URL}/api/admin/products/${editingProduct._id}`, newProduct);
 		} else {
-			await axios.post('http://localhost:5000/api/admin/products', newProduct);
+			await axios.post(`${API_BASE_URL}/api/admin/products`, newProduct);
 		}
 		fetchProducts();
 		resetForm();
 	};
 
 	const handleDelete = async (id) => {
-		await axios.delete(`http://localhost:5000/api/admin/products/${id}`);
+		await axios.delete(`${API_BASE_URL}/api/admin/products/${id}`);
 		fetchProducts();
 	};
 
