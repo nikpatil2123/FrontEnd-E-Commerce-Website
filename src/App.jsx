@@ -20,6 +20,7 @@ import ProductManagement from './admin/ProductManagement.jsx';
 import OrderStatus from './admin/Orderstatus.jsx';
 import HomeFeedManagement from './admin/HomeFeedManagement.jsx';
 import Coupons from './admin/Discount.jsx';
+import ResetPassword from './authorization/ResetPassword.tsx';
 function App() {
   // Define routes using createBrowserRouter
   const router = createBrowserRouter([
@@ -82,6 +83,10 @@ function App() {
 		{
 			path: "/checkout", // Product page route
 			element: <Checkout />,
+		},
+		{
+			path: "/ResetPass", // Product page route
+			element: <ResetPassword />,
 		},
 		{
 			path: "/admin", // Product page route

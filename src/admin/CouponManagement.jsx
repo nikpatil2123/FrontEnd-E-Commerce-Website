@@ -4,7 +4,13 @@ import { API_BASE_URL } from '../config/env';
 
 const CouponManagement = () => {
   const [coupons, setCoupons] = useState([]);
-  const [newCoupon, setNewCoupon] = useState({ code: '', remaining: 1, enabled: false, orderCondition: '' });
+  const [newCoupon, setNewCoupon] = useState({ 
+    code: '', 
+    remaining: 1, 
+    enabled: false, 
+    orderCondition: '',
+    maxUsesPerUser: 1 // Add max uses per user field with default value 1
+  });
   const [editingCoupon, setEditingCoupon] = useState(null);
 
   const fetchCoupons = async () => {
@@ -23,7 +29,7 @@ const CouponManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Debug: Log newCoupon to ensure maxApplicableAmount is set correctly
-    console.log('New Coupon Object:', newCoupon); // <-- add this log
+    console.log('New Coupon Object:', newCoupon);
     try {
       if (editingCoupon) {
         await axios.put(`${API_BASE_URL}/api/admin/coupons/${editingCoupon._id}`, newCoupon);
@@ -47,7 +53,13 @@ const CouponManagement = () => {
   };
 
   const resetForm = () => {
-    setNewCoupon({ code: '', remaining: 1, enabled: false, orderCondition: '' });
+    setNewCoupon({ 
+      code: '', 
+      remaining: 1, 
+      enabled: false, 
+      orderCondition: '',
+      maxUsesPerUser: 1 
+    });
     setEditingCoupon(null);
   };
 
@@ -80,6 +92,25 @@ const CouponManagement = () => {
               className="w-full border p-2 rounded"
               required
             />
+          </div>
+          {/* New field: Max Uses Per User */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Max Uses Per User
+            </label>
+            <input
+              type="number"
+              value={newCoupon.maxUsesPerUser}
+              onChange={(e) =>
+                setNewCoupon({ ...newCoupon, maxUsesPerUser: Number(e.target.value) })
+              }
+              min={1}
+              className="w-full border p-2 rounded"
+              required
+            />
+            <span className="text-xs text-gray-500">
+              Limits how many times a single user can use this coupon
+            </span>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -130,6 +161,7 @@ const CouponManagement = () => {
               <tr className="border-b">
                 <th className="px-4 py-2 text-left">Coupon Code</th>
                 <th className="px-4 py-2 text-left">Remaining</th>
+                <th className="px-4 py-2 text-left">Per User</th>
                 <th className="px-4 py-2 text-left">Condition</th>
                 <th className="px-4 py-2 text-left">Enabled</th>
                 <th className="px-4 py-2">Actions</th>
@@ -140,6 +172,7 @@ const CouponManagement = () => {
                 <tr key={coupon._id} className="border-b">
                   <td className="px-4 py-2">{coupon.code}</td>
                   <td className="px-4 py-2">{coupon.remaining}</td>
+                  <td className="px-4 py-2">{coupon.maxUsesPerUser || 1}x</td>
                   <td className="px-4 py-2">{coupon.orderCondition || '-'}</td>
                   <td className="px-4 py-2">{coupon.enabled ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-2 flex gap-2 justify-center">
@@ -150,7 +183,8 @@ const CouponManagement = () => {
                           code: coupon.code,
                           remaining: coupon.remaining,
                           enabled: coupon.enabled,
-                          orderCondition: coupon.orderCondition || ''
+                          orderCondition: coupon.orderCondition || '',
+                          maxUsesPerUser: coupon.maxUsesPerUser || 1
                         });
                       }}
                       className="bg-yellow-500 text-white px-2 py-1 rounded"
